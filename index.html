@@ -100,7 +100,22 @@
     min-width: calc(100% / 4 - 6px); /* 4 per row on desktop/large tablet */
     max-width: 120px;
     background:transparent;border:1px solid var(--border);padding:10px;border-radius:10px;text-align:center;cursor:pointer;transition:all .18s;
+    display: flex; /* Added flex for better content control */
+    flex-direction: column; /* Stack day name and date */
+    line-height: 1.2;
+    font-size: 14px;
   }
+  /* Added style for the date/small text inside the day button */
+  .day .date-info {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  .day.active .date-info {
+      color: rgba(255, 255, 255, 0.7);
+  }
+
   @media (max-width: 500px) {
     /* 3 per row on small phones */
     .day {
@@ -132,6 +147,7 @@
   .builder .input, input, select, textarea{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin-top:10px}
   .add-btn{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;cursor:pointer;margin-top:10px; transition: background-color 0.2s;}
   /* Ensure the custom list controls don't break layout */
+  .custom-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
   .custom-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;border:1px solid var(--border);flex-wrap: wrap; gap: 8px;}
   .custom-item > div:first-child { flex: 1 1 50%; min-width: 150px; } /* Ensure text has space */
   .custom-item > div:last-child { display: flex; gap: 8px; }
@@ -192,7 +208,7 @@
 
       <div class="builder" aria-label="Custom builder">
         <h3 style="margin:8px 0 0 0">Custom Workout Builder</h3>
-        <small class="small muted">Add an exercise for selected day (saved locally).</small>
+        <small class="small muted">Add an exercise for selected day.</small>
 
         <select id="custom-day" class="input" aria-label="Choose day for custom exercise"></select>
         <input id="custom-exercise" class="input" placeholder="Enter Exercise (e.g. Cable Fly — 4×12)" aria-label="Exercise description" />
@@ -208,8 +224,7 @@
         <p class="muted small">Choose a day from the left to view the workout. Use the plan selector at top to change programs.</p>
       </div>
 
-      <div class="footer">Tip: Your custom changes are saved to your browser. Use the theme button to toggle light/dark.</div>
-    </section>
+      <section/>
 
   </div>
 </main>
@@ -396,6 +411,35 @@ const defaultPlans = {
   }
 };
 
+/* ---------------- DATE AND DAY UTILITIES (NEW) ---------------- */
+const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+// Get the date information for the next 7 days starting today
+function getWeekInfo() {
+  const week = [];
+  const today = new Date();
+  
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(today);
+    day.setDate(today.getDate() + i);
+    
+    // Day number (1-7) corresponding to the workout data structure
+    const dayNumber = (i + 1);
+    
+    // Day name (Mon, Tue, etc.)
+    const dayName = i === 0 ? 'Today' : dayNames[day.getDay()];
+    
+    // Date in DD/MM format
+    const date = day.getDate();
+    
+    week.push({ dayNumber, dayName, date });
+  }
+  return week;
+}
+
+const weekInfo = getWeekInfo();
+let currentDayIndex = 1; // Default to Day 1 on load
+
 /* ---------------- LOAD / INIT ---------------- */
 let currentPlanName = localStorage.getItem("planName") || "Chest Priority";
 let workouts = JSON.parse(localStorage.getItem("workouts")) || JSON.parse(JSON.stringify(defaultPlans[currentPlanName]));
@@ -418,11 +462,28 @@ planSelect.addEventListener('change', () => {
 });
 
 /* ---------- Populate custom day select ---------- */
-const customDay = document.getElementById('custom-day');
-for(let i=1;i<=7;i++){ const o=document.createElement('option'); o.value=i; o.textContent='Day '+i; customDay.appendChild(o); }
+const customDaySelect = document.getElementById('custom-day');
+customDaySelect.innerHTML = ''; // Clear existing options
+weekInfo.forEach(info => {
+    const o = document.createElement('option'); 
+    o.value = info.dayNumber; 
+    o.textContent = `${info.dayName} (${info.date})`; 
+    customDaySelect.appendChild(o); 
+});
 
-/* ---------- Day buttons ---------- */
+/* ---------- Day buttons (UPDATED) ---------- */
 const dayTabs = document.getElementById('day-tabs');
+dayTabs.innerHTML = ''; // Clear default HTML buttons
+
+weekInfo.forEach(info => {
+    const btn = document.createElement('button');
+    btn.className = 'day';
+    btn.dataset.day = info.dayNumber;
+    btn.role = 'tab';
+    btn.innerHTML = `<strong>${info.dayName}</strong><span class="date-info">${info.date}</span>`;
+    dayTabs.appendChild(btn);
+});
+
 dayTabs.addEventListener('click', (e)=>{
   const btn = e.target.closest('.day');
   if(btn){
@@ -434,6 +495,7 @@ dayTabs.addEventListener('click', (e)=>{
 
 /* ---------- Show exercises ---------- */
 function showExercises(day){
+  currentDayIndex = day; // Update the global tracker
   // active style
   document.querySelectorAll('.day').forEach(x=>x.classList.remove('active'));
   const clicked = document.querySelector(`.day[data-day="${day}"]`);
@@ -455,12 +517,6 @@ function showExercises(day){
       // Check if the exercise is present in the original default plan
       const currentPlanDefault = defaultPlans[currentPlanName][day];
       return currentPlanDefault && currentPlanDefault.exercises.includes(ex);
-  });
-  
-  // Custom exercises are any that are NOT in the default plan for the selected day/plan.
-  const customEx = data.exercises.filter(ex => {
-      const currentPlanDefault = defaultPlans[currentPlanName][day];
-      return !currentPlanDefault || !currentPlanDefault.exercises.includes(ex);
   });
   
   // Decide which list to use for the main cards - custom ones will be shown below
@@ -495,7 +551,7 @@ function loadCustomList(day){
   const customExercises = (workouts[day].exercises || []).filter(ex => !defaultExercises.includes(ex));
   
   if (customExercises.length === 0) {
-      list.innerHTML = `<p class="small muted" style="margin-top:10px">No custom exercises for Day ${day}.</p>`;
+      list.innerHTML = `<p class="small muted" style="margin-top:10px">No custom exercises for this day.</p>`;
       return;
   }
   
@@ -506,7 +562,7 @@ function loadCustomList(day){
       
     const wrapper = document.createElement('div'); wrapper.className='custom-item';
     const left = document.createElement('div');
-    left.innerHTML = `<strong style="display:block">${ex}</strong><span class="small muted">Day ${day} • Custom #${i+1}</span>`;
+    left.innerHTML = `<strong style="display:block">${ex}</strong><span class="small muted">${weekInfo[day-1].dayName} (${weekInfo[day-1].date}) • Custom #${i+1}</span>`;
     const actions = document.createElement('div');
     const editBtn = document.createElement('button'); 
     editBtn.textContent='Edit'; 
@@ -565,10 +621,9 @@ function deleteExercise(day,index){
 /* ---------- Save / storage ---------- */
 function saveWorkouts(){ localStorage.setItem('workouts', JSON.stringify(workouts)); localStorage.setItem('planName', currentPlanName); }
 
-/* ---------- Auto-select today ---------- */
-const jsDay = new Date().getDay();
-const dayMap = {0:7,1:1,2:2,3:3,4:4,5:5,6:6};
-showExercises(dayMap[jsDay]);
+/* ---------- Auto-select today (UPDATED) ---------- */
+// Today corresponds to day 1 in the weekInfo array
+showExercises(1);
 
 /* ---------- Theme ---------- */
 const themeToggle = document.getElementById('theme-toggle');
