@@ -25,7 +25,8 @@
 
   /* ---------- Base ---------- */
   *{box-sizing:border-box}
-  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Poppins',sans-serif;-webkit-font-smoothing:antialiased}
+  /* FIX: Use min-height: 100vh for reliable full height on mobile browsers */
+  html,body{height:100%;min-height:100vh;margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Poppins',sans-serif;-webkit-font-smoothing:antialiased}
   a{color:inherit}
   /* Adjusted container margin/padding to account for fixed header */
   .container{
@@ -223,6 +224,8 @@
         <h2 style="margin:0 0 8px 0">Select a day</h2>
         <p class="muted small">Choose a day from the left to view the workout. Use the plan selector at top to change programs.</p>
       </div>
+      
+      <div class="footer">Tip: Your custom changes are saved to your browser. Use the theme button to toggle light/dark.</div>
 
     </section>
 
@@ -411,34 +414,148 @@ const defaultPlans = {
   }
 };
 
-/* ---------------- DATE AND DAY UTILITIES (NEW) ---------------- */
+/* ---------------- DATE AND DAY UTILITIES (UPDATED) ---------------- */
 const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-// Get the date information for the next 7 days starting today
+/**
+ * Calculates the next 7 days and maps them to workout IDs (1-7),
+ * ensuring the calculated Sunday always maps to the Rest Day (Workout ID 7).
+ * The other 6 workout IDs (1-6) are rotated to fill the remaining 6 days of the week.
+ */
 function getWeekInfo() {
   const week = [];
   const today = new Date();
+  
+  // 0=Sun, 1=Mon, ..., 6=Sat
+  const currentDayOfWeek = today.getDay(); 
+  
+  // Calculate which workout ID should be applied to today's date (Day 0 in the loop).
+  // We need to find the day offset from Sunday (Day 7/Rest).
+  // Since 0=Sun maps to 7, 1=Mon maps to 1, ..., 6=Sat maps to 6 (if we ignore the forced rotation).
+  // Day 7 is always Sunday's workout data.
+  
+  // Create an array of workout IDs in order, excluding 7 (Rest Day).
+  const workoutIdRotation = [1, 2, 3, 4, 5, 6]; 
+  
+  // Get the day index for the start of the rotation (Monday=1).
+  // If today is Monday (1), it should start with Workout ID 1.
+  // If today is Tuesday (2), it should start with Workout ID 2.
+  // The workout ID applied to the current day (i=0) should be based on where we are in the 6-day cycle.
+  
+  // Find the index in the rotation array corresponding to the current day (Mon-Sat).
+  // JavaScript day 1 (Mon) should use rotation index 0 (Workout ID 1).
+  // JavaScript day 0 (Sun) is handled separately (always Workout ID 7).
+  let startRotationIndex = (currentDayOfWeek === 0) ? 0 : currentDayOfWeek - 1; // 0 for Mon, 1 for Tue, etc. (Max 5 for Sat)
+  
+  // If today is Sunday (0), the rotation starts from Monday's workout (ID 1) the next day.
+  if (currentDayOfWeek === 0) {
+      startRotationIndex = 0; // Monday's workout ID (1) will be used for the next day (Monday)
+  }
   
   for (let i = 0; i < 7; i++) {
     const day = new Date(today);
     day.setDate(today.getDate() + i);
     
-    // Day number (1-7) corresponding to the workout data structure
-    const dayNumber = (i + 1);
+    // Day of week for the current iterated date (0=Sun, 1=Mon, ...)
+    const iteratedDayOfWeek = day.getDay();
     
-    // Day name (Mon, Tue, etc.)
-    const dayName = i === 0 ? 'Today' : dayNames[day.getDay()];
+    // Day number (1-7) corresponding to the display index
+    const displayDayNumber = (i + 1);
+    
+    // Day name (Today, Mon, Tue, etc.)
+    const dayName = i === 0 ? 'Today' : dayNames[iteratedDayOfWeek];
     
     // Date in DD/MM format
     const date = day.getDate();
     
-    week.push({ dayNumber, dayName, date });
+    let workoutId;
+    
+    if (iteratedDayOfWeek === 0) {
+        // If the iterated day is Sunday, always use the plan's Day 7 data (Rest Day).
+        workoutId = 7; 
+    } else {
+        // For Mon-Sat, use the rotating plan IDs (1-6).
+        // Calculate the index in the 6-day rotation (1, 2, 3, 4, 5, 6) based on the current day's offset from today.
+        
+        // This calculates which of the 6 workout IDs (1-6) should be applied to the current day.
+        // If today is Monday and i=0, (1-1 + 0) % 6 = 0, Workout ID = 1
+        // If today is Saturday and i=0, (6-1 + 0) % 6 = 5, Workout ID = 6
+        // If today is Monday and i=6 (next Sunday), it skips here and uses ID 7.
+        
+        // Find the "workout day" number (1-6) that this actual day should run.
+        let workoutDayOffset = iteratedDayOfWeek - 1; // 0 for Mon, 1 for Tue, ..., 5 for Sat
+        
+        // Find the starting offset in the workoutIdRotation array
+        // (Current actual day of week - 1) gives 0-5 for Mon-Sat.
+        // The rotation is Monday = W1, Tuesday = W2, etc.
+        
+        // If today is Mon (1), i=0: (1-1) % 6 = 0. Use WID 1.
+        // If today is Tue (2), i=0: (2-1) % 6 = 1. Use WID 2.
+        
+        // If today is Sat (6), i=0: (6-1) % 6 = 5. Use WID 6.
+        // If today is Sat (6), i=1 (Sun): Uses WID 7.
+        // If today is Sat (6), i=2 (Next Mon): (1-1 + 2) % 6 = 2. Use WID 3 (W1, W2, W3, W4, W5, W6, W7, W1, W2) WRONG.
+
+        // Simpler way: Calculate the difference between the target day's actual day-of-week 
+        // and the starting day's actual day-of-week, modulo 6, then add the starting workout ID.
+        
+        // Step 1: Find the Workout ID for Today (i=0)
+        let startingWorkoutId = (currentDayOfWeek === 0) ? 1 : currentDayOfWeek; // 1 for Mon, 6 for Sat. If Sun (0), start with 1.
+        
+        // If the current day is Sunday (iteratedDayOfWeek === 0), it's handled above (workoutId = 7).
+        
+        // Find the index in the 1-6 cycle relative to the start of the 1-6 cycle.
+        // Workout IDs 1-6 map to Mon-Sat.
+        let workoutDayIndex = iteratedDayOfWeek - 1; // 0 for Mon, 1 for Tue, ..., 5 for Sat
+        
+        // Now find the ID in the plan (1-6) that should map to this day.
+        // Start by finding the ID that corresponds to the initial day (i=0)
+        let currentWorkoutIdIndex = (currentDayOfWeek === 0) ? 0 : currentDayOfWeek - 1; // 0 for Mon, 5 for Sat
+        
+        // Calculate how many days passed since Today (i)
+        let totalOffset = i;
+        
+        // Account for Sunday skips in the rotation (if Sunday is today, we skip the rest day in the rotation).
+        let sundaySkips = 0;
+        for (let j = 0; j < i; j++) {
+            const tempDay = new Date(today);
+            tempDay.setDate(today.getDate() + j);
+            if (tempDay.getDay() === 0) { // If any of the previous days were Sunday
+                sundaySkips++;
+            }
+        }
+        
+        // Simplified: The workout IDs 1-6 must be assigned to the next 6 non-Sunday days in sequence.
+        
+        let nonSundayCount = 0;
+        let finalWorkoutId = -1;
+        for (let j = 0; j <= i; j++) {
+            const tempDay = new Date(today);
+            tempDay.setDate(today.getDate() + j);
+            if (tempDay.getDay() !== 0) { // If it's Mon-Sat
+                nonSundayCount++;
+                finalWorkoutId = (nonSundayCount % 6 === 0) ? 6 : nonSundayCount % 6;
+            }
+        }
+        
+        workoutId = finalWorkoutId;
+    }
+    
+    // Store the mapping: display day number (1-7) maps to workoutId (1-7)
+    week.push({ 
+        displayDayNumber: displayDayNumber, 
+        dayName: dayName, 
+        date: date, 
+        workoutId: workoutId // This is the ID (1-7) from the defaultPlans/workouts to use
+    });
   }
   return week;
 }
 
-const weekInfo = getWeekInfo();
-let currentDayIndex = 1; // Default to Day 1 on load
+
+// Recalculate and store the correct mapping
+const weekInfo = getWeekInfo(); 
+let currentDayIndex = 1; 
 
 /* ---------------- LOAD / INIT ---------------- */
 let currentPlanName = localStorage.getItem("planName") || "Chest Priority";
@@ -466,7 +583,9 @@ const customDaySelect = document.getElementById('custom-day');
 customDaySelect.innerHTML = ''; // Clear existing options
 weekInfo.forEach(info => {
     const o = document.createElement('option'); 
-    o.value = info.dayNumber; 
+    // Use the display day number (1-7) for the value, but the Workout ID for the lookup later.
+    // We must use the displayDayNumber (1-7) for the value since the custom list relies on this index.
+    o.value = info.displayDayNumber; 
     o.textContent = `${info.dayName} (${info.date})`; 
     customDaySelect.appendChild(o); 
 });
@@ -478,7 +597,8 @@ dayTabs.innerHTML = ''; // Clear default HTML buttons
 weekInfo.forEach(info => {
     const btn = document.createElement('button');
     btn.className = 'day';
-    btn.dataset.day = info.dayNumber;
+    // Use the displayDayNumber (1-7) for the data-day attribute for clicking/indexing
+    btn.dataset.day = info.displayDayNumber; 
     btn.role = 'tab';
     btn.innerHTML = `<strong>${info.dayName}</strong><span class="date-info">${info.date}</span>`;
     dayTabs.appendChild(btn);
@@ -494,32 +614,39 @@ dayTabs.addEventListener('click', (e)=>{
 });
 
 /* ---------- Show exercises ---------- */
-function showExercises(day){
-  currentDayIndex = day; // Update the global tracker
+function showExercises(dayDisplayIndex){
+  currentDayIndex = dayDisplayIndex; // Update the global tracker
+  
+  // Find the corresponding weekInfo entry to get the correct workoutId
+  const dayInfo = weekInfo.find(d => d.displayDayNumber == dayDisplayIndex);
+  if (!dayInfo) return;
+  
+  const dayWorkoutId = dayInfo.workoutId; // This is the ID (1-7) of the plan data to use
+  
   // active style
   document.querySelectorAll('.day').forEach(x=>x.classList.remove('active'));
-  const clicked = document.querySelector(`.day[data-day="${day}"]`);
+  const clicked = document.querySelector(`.day[data-day="${dayDisplayIndex}"]`);
   if(clicked){ 
     clicked.classList.add('active'); 
-    clicked.focus(); // Set focus for accessibility
+    clicked.focus(); 
   }
 
-  const data = workouts[day];
+  // --- Core change: Use dayWorkoutId to look up the workout data ---
+  const data = workouts[dayWorkoutId];
   const box = document.getElementById('exercise-container');
-  if(!data){ box.innerHTML = '<h2>Day not found</h2>'; return; }
+  if(!data){ box.innerHTML = '<h2>Workout data not found for this day</h2>'; return; }
 
   // Build layout: heading + exercise cards
   let html = `<h2 style="margin:0 0 10px 0">${data.title}</h2>`;
   html += `<div class="exercise-row">`;
 
   // Filter out custom exercises which will be loaded in the sidebar list
+  // NOTE: This comparison must use the Day's original Workout ID (dayWorkoutId)
   const defaultEx = data.exercises.filter(ex => {
-      // Check if the exercise is present in the original default plan
-      const currentPlanDefault = defaultPlans[currentPlanName][day];
+      const currentPlanDefault = defaultPlans[currentPlanName][dayWorkoutId];
       return currentPlanDefault && currentPlanDefault.exercises.includes(ex);
   });
   
-  // Decide which list to use for the main cards - custom ones will be shown below
   const primaryList = defaultEx.length > 0 ? defaultEx : data.exercises;
   
   // split exercises into two columns evenly
@@ -528,83 +655,106 @@ function showExercises(day){
   const col2 = primaryList.slice(perCol);
 
   html += `<div class="exercise-card"><h3>Primary Focus</h3><p>${col1.map(e=>'• '+escapeHtml(e)).join('<br>')}</p></div>`;
-  // If no secondary/accessory exercises, use a sensible default text
+  
   const secondaryContent = col2.length ? 
       col2.map(e=>'• '+escapeHtml(e)).join('<br>') : 
-      (col1.length > 0 ? '• Accessory work / Finisher' : '• Rest / Mobility');
+      (col1.length > 0 ? '• Accessory work / Finisher' : '• Active Rest / Mobility');
       
   html += `<div class="exercise-card"><h3>Secondary / Accessories</h3><p>${secondaryContent}</p></div>`;
 
   html += `</div>`; // exercise-row
 
   box.innerHTML = html;
-  loadCustomList(day);
+  // --- Core change: loadCustomList must use the dayDisplayIndex (1-7) to look up the local data ---
+  loadCustomList(dayDisplayIndex);
 }
 
 /* ---------- Custom builder functions ---------- */
-function loadCustomList(day){
+function loadCustomList(dayDisplayIndex){
   const list = document.getElementById('custom-list');
   list.innerHTML = '';
   
-  // Find all exercises that are NOT in the default plan for this day
-  const defaultExercises = defaultPlans[currentPlanName][day].exercises;
-  const customExercises = (workouts[day].exercises || []).filter(ex => !defaultExercises.includes(ex));
+  // Find the corresponding weekInfo entry
+  const dayInfo = weekInfo.find(d => d.displayDayNumber == dayDisplayIndex);
+  if (!dayInfo) return;
+
+  const dayWorkoutId = dayInfo.workoutId;
+
+  // Retrieve the original/default exercises for the matched workout plan day
+  const defaultExercises = defaultPlans[currentPlanName][dayWorkoutId].exercises;
+  
+  // The workouts array stores data using the plan's Day ID (1-7).
+  const currentDayWorkouts = workouts[dayWorkoutId].exercises || [];
+  
+  // Find custom exercises by comparing to the default plan for that dayWorkoutId
+  const customExercises = currentDayWorkouts.filter(ex => !defaultExercises.includes(ex));
   
   if (customExercises.length === 0) {
       list.innerHTML = `<p class="small muted" style="margin-top:10px">No custom exercises for this day.</p>`;
+      // Ensure custom-day select is still set to the currently viewed day
+      document.getElementById('custom-day').value = dayDisplayIndex; 
       return;
   }
   
-  // Re-index based on the filtered custom list
   customExercises.forEach((ex,i)=>{
-    // Find the original index in the main 'workouts' array to allow for correct deletion/editing
-    const originalIndex = workouts[day].exercises.indexOf(ex); 
+    // Find the original index in the main 'workouts' array (using dayWorkoutId)
+    const originalIndex = currentDayWorkouts.indexOf(ex); 
       
     const wrapper = document.createElement('div'); wrapper.className='custom-item';
     const left = document.createElement('div');
-    left.innerHTML = `<strong style="display:block">${ex}</strong><span class="small muted">${weekInfo[day-1].dayName} (${weekInfo[day-1].date}) • Custom #${i+1}</span>`;
+    left.innerHTML = `<strong style="display:block">${ex}</strong><span class="small muted">${dayInfo.dayName} (${dayInfo.date}) • Custom #${i+1}</span>`;
     const actions = document.createElement('div');
+    
+    // Pass dayWorkoutId to edit/delete functions so they modify the correct workout data (1-7)
     const editBtn = document.createElement('button'); 
     editBtn.textContent='Edit'; 
     editBtn.className='add-btn'; 
-    editBtn.onclick = ()=> editExercise(day,originalIndex);
+    editBtn.onclick = ()=> editExercise(dayWorkoutId, originalIndex, dayDisplayIndex);
     
     const delBtn = document.createElement('button'); 
     delBtn.textContent='Delete'; 
     delBtn.className='add-btn'; 
-    delBtn.onclick = ()=> deleteExercise(day,originalIndex);
+    delBtn.onclick = ()=> deleteExercise(dayWorkoutId, originalIndex, dayDisplayIndex);
     
     actions.appendChild(editBtn); actions.appendChild(delBtn);
     wrapper.appendChild(left); wrapper.appendChild(actions);
     list.appendChild(wrapper);
   });
-  document.getElementById('custom-day').value = day;
+  // Ensure custom-day select is set to the currently viewed day
+  document.getElementById('custom-day').value = dayDisplayIndex;
 }
 
+
 function addCustomExercise(){
-  const day = document.getElementById('custom-day').value;
+  const dayDisplayIndex = document.getElementById('custom-day').value;
   const ex = document.getElementById('custom-exercise').value.trim();
   if(!ex){ alert('Enter a valid exercise'); return; }
   
-  // Add new custom exercise to the end of the day's exercise list
-  workouts[day].exercises.push(ex);
+  // Find the correct Workout ID (1-7) that corresponds to this display day
+  const dayInfo = weekInfo.find(d => d.displayDayNumber == dayDisplayIndex);
+  if (!dayInfo) return;
+  const dayWorkoutId = dayInfo.workoutId;
+  
+  // Add new custom exercise to the end of the correct day's exercise list
+  workouts[dayWorkoutId].exercises.push(ex);
   saveWorkouts();
   document.getElementById('custom-exercise').value = '';
-  showExercises(day);
+  showExercises(dayDisplayIndex);
 }
 
-function editExercise(day,index){
-  const current = workouts[day].exercises[index];
+// Added dayDisplayIndex to refresh the view correctly
+function editExercise(dayWorkoutId, index, dayDisplayIndex){
+  const current = workouts[dayWorkoutId].exercises[index];
   const v = prompt('Edit exercise:', current);
   if(v && v.trim()!==''){ 
-      workouts[day].exercises[index] = v.trim(); 
+      workouts[dayWorkoutId].exercises[index] = v.trim(); 
       saveWorkouts(); 
-      showExercises(day); 
+      showExercises(dayDisplayIndex); 
   }
 }
-function deleteExercise(day,index){
-  // Find out if this is a default exercise or a custom one
-  const isDefault = defaultPlans[currentPlanName][day].exercises.includes(workouts[day].exercises[index]);
+// Added dayDisplayIndex to refresh the view correctly
+function deleteExercise(dayWorkoutId, index, dayDisplayIndex){
+  const isDefault = defaultPlans[currentPlanName][dayWorkoutId].exercises.includes(workouts[dayWorkoutId].exercises[index]);
   
   let msg = 'Remove this exercise?';
   if(isDefault) {
@@ -612,9 +762,9 @@ function deleteExercise(day,index){
   }
   
   if(confirm(msg)){ 
-      workouts[day].exercises.splice(index,1); 
+      workouts[dayWorkoutId].exercises.splice(index,1); 
       saveWorkouts(); 
-      showExercises(day); 
+      showExercises(dayDisplayIndex); 
   }
 }
 
@@ -622,7 +772,7 @@ function deleteExercise(day,index){
 function saveWorkouts(){ localStorage.setItem('workouts', JSON.stringify(workouts)); localStorage.setItem('planName', currentPlanName); }
 
 /* ---------- Auto-select today (UPDATED) ---------- */
-// Today corresponds to day 1 in the weekInfo array
+// Today corresponds to the display Day 1
 showExercises(1);
 
 /* ---------- Theme ---------- */
