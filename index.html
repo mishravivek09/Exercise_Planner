@@ -3,83 +3,140 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Mind & Life Rituals — Multi-Theme Animated</title>
-
+<title>Mind & Life Rituals — Multi-Theme Animated (Final)</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
 <style>
-  /* ========== CSS VARIABLES (themes controlled by .theme-*) ========== */
-  :root{
-    --bg-start: #0b1020;
-    --bg-end:   #1b2a4a;
-    --card-bg: rgba(255,255,255,0.04);
-    --text: #eef2ff;
-    --accent: #8b7bff;
-    --muted: rgba(238,242,255,0.72);
-    --glass: rgba(255,255,255,0.03);
-    --particle-color: rgba(255,255,255,0.9);
-  }
+/* =========================
+   GLOBAL THEME VARIABLES (defaults)
+   ========================= */
+:root{
+  --bg-a: #0f1530; --bg-b: #1a2448;
+  --card-bg: rgba(255,255,255,0.04);
+  --accent: #7a6ff0;
+  --text-primary: #eef2ff;
+  --text-secondary: rgba(238,242,255,0.78);
+  --muted: rgba(238,242,255,0.7);
+  --particle-color: rgba(255,255,255,0.95);
+  --glass: rgba(255,255,255,0.03);
+  --radius: 12px;
+  --shadow: 0 10px 30px rgba(0,0,0,0.45);
+}
 
-  /* Theme: B - Cosmic Galaxy (default) */
-  .theme-cosmic { --bg-start:#02021a; --bg-end:#1a1740; --accent:#8b7bff; --particle-color:rgba(255,255,255,0.95); --card-bg:rgba(255,255,255,0.03); --text:#eef2ff; }
-  /* Theme: Emerald Forest */
-  .theme-emerald { --bg-start:#022b20; --bg-end:#0b5a43; --accent:#34d399; --particle-color:rgba(52,211,153,0.9); --card-bg:rgba(255,255,255,0.03); --text:#eefbf5; }
-  /* Theme: Cyber Neon */
-  .theme-cyber { --bg-start:#051024; --bg-end:#08122a; --accent:#00d0ff; --particle-color:rgba(255,0,200,0.9); --card-bg:rgba(255,255,255,0.02); --text:#dff6ff; }
-  /* Theme: Glass (white/silver) */
-  .theme-glass { --bg-start:#eef2ff; --bg-end:#ffffff; --accent:#7a6ff0; --particle-color:rgba(122,111,240,0.16); --card-bg:rgba(255,255,255,0.65); --text:#111827; }
-  /* Theme: Matte Black Minimal */
-  .theme-matte { --bg-start:#0a0a0a; --bg-end:#121212; --accent:#a0a0a0; --particle-color:rgba(255,255,255,0.06); --card-bg:rgba(255,255,255,0.02); --text:#e6e6e6; }
+/* ---------- Themes: A, B, C, F ---------- */
+/* Theme A: Purple–Blue Aurora Glow */
+.theme-aurora {
+  --bg-a:#071029; --bg-b:#11204a;
+  --accent:#6f8cff;
+  --card-bg: rgba(255,255,255,0.03);
+  --particle-color: rgba(150,170,255,0.95);
+  --text-primary: #eef4ff;
+  --text-secondary: rgba(238,244,255,0.82);
+}
 
-  /* ========== Base styles ========== */
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Poppins',sans-serif;background:linear-gradient(180deg,var(--bg-start),var(--bg-end));color:var(--text);-webkit-font-smoothing:antialiased}
-  a{color:inherit}
-  header{position:fixed;left:0;right:0;top:0;height:72px;display:flex;align-items:center;gap:12px;padding:12px 20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,0.03);z-index:60}
-  .brand{font-weight:700;font-size:16px;color:var(--accent);margin-left:6px}
-  .controls{margin-left:auto;display:flex;align-items:center;gap:10px}
-  .select, .btn {border-radius:10px;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;background:var(--card-bg);color:var(--text);cursor:pointer}
-  .btn.primary{background:linear-gradient(90deg,var(--accent),rgba(255,255,255,0.06));color:#fff;border:none;font-weight:600}
+/* Theme B: Cosmic Galaxy */
+.theme-cosmic {
+  --bg-a:#02021a; --bg-b:#1a1740;
+  --accent:#9b7bff;
+  --card-bg: rgba(255,255,255,0.03);
+  --particle-color: rgba(255,255,255,0.95);
+  --text-primary: #eef2ff;
+  --text-secondary: rgba(238,242,255,0.78);
+}
 
-  /* ========== Page layout ========== */
-  .wrap{width:94%;max-width:1100px;margin:110px auto 60px;position:relative;display:grid;grid-template-columns:320px 1fr;gap:20px}
-  @media (max-width:980px){ .wrap{grid-template-columns:1fr;padding:18px} header{height:64px} }
+/* Theme C: Emerald Forest */
+.theme-emerald {
+  --bg-a:#021e18; --bg-b:#0b5a43;
+  --accent:#34d399;
+  --card-bg: rgba(255,255,255,0.02);
+  --particle-color: rgba(52,211,153,0.9);
+  --text-primary: #eefbf5;
+  --text-secondary: rgba(238,251,245,0.82);
+}
 
-  /* Sidebar */
-  .sidebar{position:sticky;top:86px;background:var(--card-bg);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(6px)}
-  .days{display:flex;flex-wrap:wrap;gap:8px}
-  .day{flex:1 1 120px;padding:10px;border-radius:10px;text-align:center;background:transparent;border:1px solid rgba(255,255,255,0.04);cursor:pointer}
-  .day.active{background:linear-gradient(90deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));box-shadow:0 8px 30px rgba(0,0,0,0.4)}
-  .small{font-size:13px;color:var(--text);opacity:0.85}
+/* Theme F: Glassmorphism White/Silver */
+.theme-glass {
+  --bg-a:#eef2ff; --bg-b:#ffffff;
+  --accent:#7a6ff0;
+  --card-bg: rgba(255,255,255,0.70);
+  --particle-color: rgba(122,111,240,0.18);
+  --text-primary: #111827;
+  --text-secondary: rgba(17,24,39,0.75);
+}
 
-  /* Main panel */
-  .panel{background:var(--card-bg);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);min-height:320px;backdrop-filter:blur(6px)}
-  .panel h2{margin:0 0 10px 0}
-  .exercise-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media (max-width:680px){ .exercise-row{grid-template-columns:1fr} }
+/* =========================
+   BASE LAYOUT & TYPOGRAPHY
+   ========================= */
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Poppins',sans-serif;
+  background: linear-gradient(180deg,var(--bg-a),var(--bg-b)); color:var(--text-primary);
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+a{color:inherit}
 
-  .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 6px 20px rgba(0,0,0,0.5)}
-  .card h3{margin:0 0 8px 0}
-  .card p{margin:0;color:var(--muted);line-height:1.5;font-size:14px}
+header{
+  position:fixed;left:0;right:0;top:0;height:72px;display:flex;align-items:center;padding:12px 20px;
+  gap:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);backdrop-filter:blur(6px);
+  border-bottom:1px solid rgba(255,255,255,0.03);z-index:80;
+}
+.brand{font-weight:700;font-size:16px;color:var(--accent);letter-spacing:0.2px}
 
-  /* Custom builder */
-  .builder{margin-top:16px;display:flex;flex-direction:column;gap:10px}
-  input,select,textarea{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text);min-height:40px}
-  textarea{min-height:84px;resize:vertical}
-  .actions{display:flex;gap:10px;flex-wrap:wrap}
+/* controls */
+.controls{margin-left:auto;display:flex;align-items:center;gap:10px}
+.select, .btn{border-radius:10px;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;background:var(--card-bg);color:var(--text-primary);cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),rgba(255,255,255,0.06));color:#fff;border:none;font-weight:600}
 
-  /* theme picker */
-  .theme-palette{display:flex;gap:8px;align-items:center}
-  .swatch{width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);cursor:pointer}
+/* canvas particles sits behind header & content */
+#particles{position:fixed;inset:0;z-index:10;pointer-events:none}
 
-  /* particle canvas overlay */
-  #particles{position:fixed;left:0;top:0;right:0;bottom:0;z-index:10;pointer-events:none}
-  /* ensure content over particles */
-  header, .wrap{position:relative;z-index:20}
+/* main layout */
+.wrap{width:94%;max-width:1200px;margin:110px auto 60px;display:grid;grid-template-columns:320px 1fr;gap:20px;position:relative;z-index:20}
+@media (max-width:980px){.wrap{grid-template-columns:1fr;padding:20px;margin-top:96px} header{height:64px}}
 
-  /* subtle transitions */
-  .card, .day, .btn, .select {transition:all .22s cubic-bezier(.2,.9,.2,1)}
-  .muted{opacity:0.8;color:var(--text)}
+/* sidebar */
+.sidebar{position:sticky;top:86px;background:var(--card-bg);padding:16px;border-radius:var(--radius);border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(6px);box-shadow:var(--shadow)}
+.header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.small{font-size:13px;color:var(--text-secondary)}
+
+.days{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.day{flex:1 1 120px;padding:10px;border-radius:10px;text-align:center;background:transparent;border:1px solid rgba(255,255,255,0.04);cursor:pointer;color:var(--text-primary)}
+.day:hover{transform:translateY(-3px)}
+.day.active{background:linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+
+/* panel */
+.panel{background:var(--card-bg);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(6px);box-shadow:var(--shadow);min-height:360px}
+.panel h2{margin:0 0 10px 0}
+.muted{color:var(--text-secondary)}
+
+/* exercise layout */
+.exercise-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media (max-width:680px){ .exercise-row{grid-template-columns:1fr} .card{width:100%} }
+
+.card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 8px 30px rgba(0,0,0,0.35)}
+.card h3{margin:0 0 8px 0}
+.card p{margin:0;color:var(--text-secondary);line-height:1.6}
+
+/* builder */
+.builder{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+input,select,textarea{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text-primary)}
+textarea{min-height:86px;resize:vertical}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* theme palette swatches */
+.theme-palette{display:flex;gap:8px;align-items:center}
+.swatch{width:36px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.25)}
+
+/* accessibility focus */
+.day:focus, .select:focus, .btn:focus, .swatch:focus{outline:3px solid rgba(255,255,255,0.06);outline-offset:3px}
+
+/* subtle entrance */
+.card, .day, .panel, .sidebar{transition:all .22s cubic-bezier(.2,.9,.2,1)}
+
+/* small screens tweaks */
+@media (max-width:480px){
+  header{padding:10px}
+  .brand{font-size:15px}
+  .swatch{width:30px;height:30px}
+  .select, .btn{padding:7px 8px}
+}
 </style>
 </head>
 <body class="theme-cosmic">
@@ -88,33 +145,34 @@
 <canvas id="particles" aria-hidden="true"></canvas>
 
 <header>
-  <div style="display:flex;align-items:center;gap:8px">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="url(#g)"/></svg>
+  <div style="display:flex;align-items:center;gap:10px">
+    <!-- small logo -->
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#7a6ff0"/><stop offset="1" stop-color="#4da6ff"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#g)"/></svg>
     <div class="brand">Mind & Life Rituals</div>
   </div>
 
   <div class="controls" role="toolbar" aria-label="Controls">
-    <div class="theme-palette" title="Select theme (changes particle style)">
-      <!-- swatches will be added by JS -->
+    <div class="theme-palette" title="Themes (click)">
+      <!-- swatches injected by JS -->
     </div>
 
-    <select id="plan-select" class="select" aria-label="Select plan">
-      <option>Rituals — Default</option>
-    </select>
-
+    <select id="plan-select" class="select" aria-label="Select plan"></select>
     <button id="toggle-theme-button" class="btn" title="Toggle light/dark">Toggle Light</button>
   </div>
 </header>
 
 <main class="wrap" id="app">
   <!-- SIDEBAR -->
-  <aside class="sidebar" aria-label="Day selector">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <div><strong>Week</strong><div class="small muted">Tap a day</div></div>
+  <aside class="sidebar" aria-label="Week planner">
+    <div class="header-row">
+      <div>
+        <strong>Week Planner</strong>
+        <div class="small muted">Tap a day</div>
+      </div>
       <div id="current-theme-name" class="small muted">Cosmic</div>
     </div>
 
-    <div class="days" id="day-tabs" role="tablist">
+    <div class="days" id="day-tabs" role="tablist" aria-label="Days">
       <button class="day" data-day="1" role="tab">Day 1</button>
       <button class="day" data-day="2" role="tab">Day 2</button>
       <button class="day" data-day="3" role="tab">Day 3</button>
@@ -124,12 +182,12 @@
       <button class="day" data-day="7" role="tab">Day 7</button>
     </div>
 
-    <div class="builder" aria-label="Custom builder">
+    <div class="builder" style="margin-top:14px">
       <label class="small muted">Day</label>
       <select id="custom-day" aria-label="Select day for custom exercise"></select>
 
       <label class="small muted">Exercise</label>
-      <input id="custom-exercise" placeholder="e.g. Incline DB Press — 4×10" />
+      <input id="custom-exercise" placeholder="e.g. Incline DB Press — 4×10" aria-label="Exercise input" />
 
       <div class="actions">
         <button class="btn primary" id="add-ex-btn">Add Exercise</button>
@@ -138,62 +196,66 @@
     </div>
   </aside>
 
-  <!-- MAIN -->
+  <!-- MAIN PANEL -->
   <section class="panel" aria-live="polite">
     <div id="exercise-container">
       <h2>Welcome</h2>
-      <p class="muted">Select a day on the left to view exercises. Theme & text are saved silently in your browser.</p>
+      <p class="muted">Select a day on the left to view exercises. Theme & data are saved silently in your browser (no messages shown).</p>
     </div>
+
     <div class="builder" style="margin-top:18px">
       <label class="small muted">Notes / Ritual</label>
-      <textarea id="notes" placeholder="Write your ritual / notes here..."></textarea>
+      <textarea id="notes" placeholder="Write your ritual / notes here..." aria-label="Notes"></textarea>
     </div>
   </section>
 </main>
 
 <script>
-/* ===========================
-   Data: default plans (Option B-ish)
-   =========================== */
+/* =========================
+   Config & Data
+   ========================= */
+const THEMES = [
+  { id: "theme-aurora", name: "Aurora" },
+  { id: "theme-cosmic", name: "Cosmic" },
+  { id: "theme-emerald", name: "Emerald" },
+  { id: "theme-glass", name: "Glass" }
+];
+
+const PART_PRESETS = {
+  "theme-aurora": { type: "stars", color: "rgba(150,170,255,0.95)", size: 1.8, speed: 0.5 },
+  "theme-cosmic": { type: "stars", color: "rgba(255,255,255,0.95)", size: 1.6, speed: 0.45 },
+  "theme-emerald": { type: "orbs",  color: "rgba(52,211,153,0.9)", size: 2.8, speed: 0.28 },
+  "theme-glass":  { type: "bokeh", color: "rgba(122,111,240,0.14)", size: 6.0, speed: 0.18 }
+};
+
+/* LocalStorage keys (silent usage) */
+const LS_THEME = "mlr_theme_final";
+const LS_PLANS = "mlr_plans_final";
+const LS_NOTES = "mlr_notes_final";
+
+/* Default plans (Option B-like) */
 const defaultPlans = {
   "Rituals — Default": {
-    1: { title: "Gym Ritual", exercises: ["Warm-up 10 min", "Mindful breathing 3 min", "Barbell Bench Press — 4×8", "Incline DB Press — 4×10"] },
-    2: { title: "Love Ritual", exercises: ["Gratitude journal 5 min", "Affirmation — ’I am worthy' x3", "Listen to partner for 5 min"] },
-    3: { title: "Interview Ritual", exercises: ["Review resume 10 min", "Mock Q&A 15 min", "Confidence primer — posture & breath"] },
-    4: { title: "Recovery & Mobility", exercises: ["Foam roll 10 min", "Stretch hips & shoulders 12 min"] },
-    5: { title: "Focus & Flow", exercises: ["Cold splash 30s", "Breathwork — 5-5-5", "Short visualization 5 min"] },
-    6: { title: "Energy Boost", exercises: ["Quick HIIT 10 min", "Protein snack", "Power posture 2 min"] },
+    1: { title: "Gym Ritual", exercises: ["Warm-up 10 min", "Mindful breathing 3 min", "Barbell Bench Press — 4×8", "Incline DB Press — 4×10", "Cable Fly — 3×12"] },
+    2: { title: "Love Ritual", exercises: ["Gratitude journal 5 min", "Affirmation — 'I am worthy' ×3", "Quality listening: 5 min"] },
+    3: { title: "Interview Ritual", exercises: ["Resume review 10 min", "Mock Q&A 15 min", "Confidence primer — posture & breath"] },
+    4: { title: "Legs & Mobility", exercises: ["Back Squat — 4×6", "Romanian Deadlift — 3×8", "Leg Press — 3×10"] },
+    5: { title: "Focus & Flow", exercises: ["Cold splash 30s", "Breathwork — 5-5-5", "Visualization 5 min"] },
+    6: { title: "Arms & Shoulders", exercises: ["Overhead Press — 4×8", "Lateral Raise — 4×12", "Barbell Curl — 4×8"] },
     7: { title: "Rest & Reset", exercises: ["Meditation 10 min", "Reflective journaling 7 min"] }
   }
 };
 
-/* ===========================
-   Themes config and particle presets
-   =========================== */
-const THEMES = [
-  { id: "theme-cosmic", name:"Cosmic", swatch: "linear-gradient(135deg,#02021a,#1a1740)", particles: "stars" },
-  { id: "theme-emerald", name:"Emerald", swatch: "linear-gradient(135deg,#022b20,#0b5a43)", particles: "orbs" },
-  { id: "theme-cyber", name:"Cyber", swatch: "linear-gradient(135deg,#051024,#08122a)", particles: "sparks" },
-  { id: "theme-glass", name:"Glass", swatch: "linear-gradient(135deg,#eef2ff,#ffffff)", particles: "bokeh" },
-  { id: "theme-matte", name:"Matte", swatch: "linear-gradient(135deg,#0a0a0a,#121212)", particles: "dust" }
-];
-
-/* ===========================
-   App state (uses localStorage silently)
-   =========================== */
-const LS_THEME_KEY = "mlr_theme";
-const LS_PLANS_KEY = "mlr_plans";     // saved plans (workouts) as JSON
-const LS_NOTES_KEY = "mlr_notes";     // notes/ritual text
-
-let currentTheme = localStorage.getItem(LS_THEME_KEY) || "theme-cosmic";
-let plans = JSON.parse(localStorage.getItem(LS_PLANS_KEY)) || defaultPlans;
+/* =========================
+   State
+   ========================= */
+let currentTheme = localStorage.getItem(LS_THEME) || "theme-cosmic";
+let plans = JSON.parse(localStorage.getItem(LS_PLANS)) || defaultPlans;
 let currentPlanName = Object.keys(plans)[0];
 let workouts = JSON.parse(JSON.stringify(plans[currentPlanName])); // deep copy
 let currentDay = 1;
 
-/* ===========================
-   DOM refs
-   =========================== */
+/* DOM refs */
 const body = document.body;
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
@@ -209,27 +271,31 @@ const notesEl = document.getElementById("notes");
 const planSelect = document.getElementById("plan-select");
 const toggleThemeButton = document.getElementById("toggle-theme-button");
 
-/* ===========================
-   Initialize UI
-   =========================== */
-function init(){
-  // apply stored theme
-  document.body.classList.remove(...Array.from(document.body.classList).filter(c=>c.startsWith("theme-")));
-  document.body.classList.add(currentTheme);
+/* =========================
+   Init UI
+   ========================= */
+function initUI(){
+  // apply theme
+  applyTheme(currentTheme);
+
   // populate swatches
   THEMES.forEach(t=>{
-    const s = document.createElement("div");
-    s.className = "swatch";
-    s.title = t.name;
-    s.style.background = t.swatch;
-    s.dataset.tid = t.id;
-    s.onclick = ()=> setTheme(t.id);
-    swatchesContainer.appendChild(s);
+    const d = document.createElement("div");
+    d.className = "swatch";
+    d.title = t.name;
+    // simple gradient preview based on theme id
+    if(t.id === "theme-aurora") d.style.background = "linear-gradient(135deg,#071029,#11204a)";
+    if(t.id === "theme-cosmic") d.style.background = "linear-gradient(135deg,#02021a,#1a1740)";
+    if(t.id === "theme-emerald") d.style.background = "linear-gradient(135deg,#022b20,#0b5a43)";
+    if(t.id === "theme-glass") d.style.background = "linear-gradient(135deg,#eef2ff,#ffffff)";
+    d.onclick = ()=> setTheme(t.id);
+    swatchesContainer.appendChild(d);
   });
-  currentThemeNameEl.textContent = THEMES.find(t=>t.id===currentTheme).name || "Cosmic";
 
-  // populate plan select
-  Object.keys(plans).forEach(p=> {
+  currentThemeNameEl.textContent = THEMES.find(t=>t.id===currentTheme).name || currentTheme;
+
+  // plan select
+  Object.keys(plans).forEach(p => {
     const o = document.createElement("option"); o.value = p; o.textContent = p; planSelect.appendChild(o);
   });
   planSelect.value = currentPlanName;
@@ -237,23 +303,15 @@ function init(){
     currentPlanName = planSelect.value;
     workouts = JSON.parse(JSON.stringify(plans[currentPlanName]));
     showExercises(currentDay);
-    // silently persist plans if changed externally
     savePlans();
   };
 
-  // populate custom day select
-  for(let i=1;i<=7;i++){
-    const o = document.createElement("option");
-    o.value = i; o.textContent = "Day "+i;
-    customDay.appendChild(o);
-  }
+  // custom day options
+  for(let i=1;i<=7;i++){ const o=document.createElement("option"); o.value = i; o.textContent = "Day "+i; customDay.appendChild(o); }
 
-  // day buttons
+  // day buttons click
   Array.from(dayTabs.querySelectorAll(".day")).forEach(btn=>{
-    btn.addEventListener("click", ()=> {
-      const d = Number(btn.dataset.day);
-      setActiveDay(d);
-    });
+    btn.addEventListener("click", ()=> setActiveDay(Number(btn.dataset.day)));
   });
 
   addExBtn.addEventListener("click", ()=> {
@@ -271,47 +329,64 @@ function init(){
     const d = Number(customDay.value || currentDay);
     if(workouts[d]) workouts[d].exercises = [];
     showExercises(d);
-    savePlans(); // silent
+    savePlans();
   });
 
-  notesEl.value = localStorage.getItem(LS_NOTES_KEY) || "";
-  notesEl.addEventListener("input", ()=> { localStorage.setItem(LS_NOTES_KEY, notesEl.value); });
+  notesEl.value = localStorage.getItem(LS_NOTES) || "";
+  notesEl.addEventListener("input", ()=> localStorage.setItem(LS_NOTES, notesEl.value)); // silent
 
-  // theme toggle
   toggleThemeButton.addEventListener("click", ()=> {
-    // simple light/dark swap between glass and cosmic variants
-    if(document.body.classList.contains("theme-glass")) setTheme("theme-cosmic"); else setTheme("theme-glass");
+    // toggle between glass and cosmic for quick preview
+    setTheme(body.classList.contains("theme-glass") ? "theme-cosmic" : "theme-glass");
   });
 
-  // initial day
-  setActiveDay(currentDay);
-
-  // start particles
-  resizeCanvas();
-  window.addEventListener("resize", throttle(resizeCanvas, 150));
-  startParticles();
+  // auto day based on today
+  const jsDay = new Date().getDay(); const dayMap = {0:7,1:1,2:2,3:3,4:4,5:5,6:6};
+  setActiveDay(dayMap[jsDay]);
 }
 
-/* ===========================
+/* =========================
    Theme handling
-   =========================== */
-function setTheme(id){
+   ========================= */
+function applyTheme(themeId){
+  // remove other theme classes
   document.body.classList.remove(...Array.from(document.body.classList).filter(c=>c.startsWith("theme-")));
-  document.body.classList.add(id);
-  currentTheme = id;
-  localStorage.setItem(LS_THEME_KEY, id); // silent
-  currentThemeNameEl.textContent = THEMES.find(t=>t.id===id).name || id;
-  // update particle preset
-  configureParticlesForTheme(id);
+  document.body.classList.add(themeId);
+  currentTheme = themeId;
+  localStorage.setItem(LS_THEME, themeId); // silent
+  const themeObj = THEMES.find(t=>t.id===themeId) || { name: themeId };
+  currentThemeNameEl.textContent = themeObj.name || themeId;
+  // ensure days & text contrast work: use CSS variables defined in theme blocks; but also set fallback for text if missing
+  adaptContrastForTheme(themeId);
+  configureParticlesForTheme(themeId);
 }
 
-/* ===========================
-   Workout UI rendering
-   =========================== */
+function setTheme(id){
+  applyTheme(id);
+}
+
+/* Auto-adjust contrast fallback (ensures day text visible) */
+function adaptContrastForTheme(id){
+  // For glass (light) set dark text variables on :root for UI elements that might be lost
+  if(id === "theme-glass"){
+    document.documentElement.style.setProperty('--text-primary', '#111827');
+    document.documentElement.style.setProperty('--text-secondary', 'rgba(17,24,39,0.75)');
+  } else {
+    document.documentElement.style.setProperty('--text-primary', getComputedStyle(document.body).getPropertyValue('--text-primary') || '#eef2ff');
+    document.documentElement.style.setProperty('--text-secondary', getComputedStyle(document.body).getPropertyValue('--text-secondary') || 'rgba(238,242,255,0.78)');
+  }
+  // force-day text color usage by applying inline styles to day buttons if necessary (safer)
+  Array.from(document.querySelectorAll('.day')).forEach(d=>{
+    d.style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim();
+  });
+}
+
+/* =========================
+   Workouts UI
+   ========================= */
 function setActiveDay(d){
   currentDay = Number(d);
-  // set UI active
-  Array.from(dayTabs.querySelectorAll(".day")).forEach(b=> b.classList.toggle("active", Number(b.dataset.day)===currentDay));
+  Array.from(dayTabs.querySelectorAll('.day')).forEach(b=> b.classList.toggle('active', Number(b.dataset.day)===currentDay));
   customDay.value = currentDay;
   showExercises(currentDay);
 }
@@ -320,171 +395,125 @@ function showExercises(day){
   const data = workouts[day] || { title: `Day ${day}`, exercises: [] };
   let html = `<h2 style="margin:0 0 8px 0">${escapeHtml(data.title)}</h2>`;
   html += `<div class="exercise-row">`;
-  // split into primary & secondary
   const exs = data.exercises || [];
   const half = Math.ceil(exs.length/2);
   const col1 = exs.slice(0, half);
   const col2 = exs.slice(half);
-  html += `<div class="card"><h3>Primary</h3><p>${col1.length? col1.map(e=>'• '+escapeHtml(e)).join('<br/>') : '• None'}</p></div>`;
-  html += `<div class="card"><h3>Secondary</h3><p>${col2.length? col2.map(e=>'• '+escapeHtml(e)).join('<br/>') : '• Rest / Mobility'}</p></div>`;
+  html += `<div class="card"><h3>Primary</h3><p>${col1.length ? col1.map(e=>'• '+escapeHtml(e)).join('<br/>') : '• None'}</p></div>`;
+  html += `<div class="card"><h3>Secondary</h3><p>${col2.length ? col2.map(e=>'• '+escapeHtml(e)).join('<br/>') : '• Rest / Mobility'}</p></div>`;
   html += `</div>`;
   exerciseContainer.innerHTML = html;
 }
 
-/* ===========================
-   Persistence (no messages)
-   =========================== */
+/* =========================
+   Persistence (silent)
+   ========================= */
 function savePlans(){
-  // merge back into 'plans' root under currentPlanName and persist silently
   plans[currentPlanName] = JSON.parse(JSON.stringify(workouts));
-  localStorage.setItem(LS_PLANS_KEY, JSON.stringify(plans));
+  localStorage.setItem(LS_PLANS, JSON.stringify(plans));
 }
 
-/* ===========================
-   UTIL: escapeHtml
-   =========================== */
+/* =========================
+   Utilities
+   ========================= */
 function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
-/* ===========================
-   Throttle
-   =========================== */
-function throttle(fn, wait){ let t=null; return function(){ if(t) return; t=setTimeout(()=>{ fn(); t=null; }, wait); }; }
+/* =========================
+   PARTICLES (canvas) - optimized, different types per theme
+   ========================= */
+let particles = [], last = 0;
+const ctxRef = ctx;
+let PART = { count: 120, maxSize: 2.0, speed: 0.4, type: 'stars', color: 'rgba(255,255,255,0.9)' };
 
-/* ===========================
-   PARTICLES SYSTEM (canvas)
-   - Different particle types per theme:
-     stars (cosmic), orbs (emerald), sparks (cyber), bokeh (glass), dust (matte)
-   - Optimized: fewer particles on small screens
-   =========================== */
-let particles = [];
-let P = { count: 120, gravity: 0, maxSize: 2.6, speed: 0.4, type: 'stars', hueShift:0 };
 function resizeCanvas(){
   canvas.width = innerWidth;
   canvas.height = innerHeight;
-  // adapt particle count for device
   const area = canvas.width * canvas.height;
-  P.count = area > 1200000 ? 180 : area > 600000 ? 120 : 70;
-  // reinit particles
+  PART.count = area > 1600000 ? 180 : area > 700000 ? 120 : 70;
   initParticles();
 }
-
 function initParticles(){
   particles = [];
-  for(let i=0;i<P.count;i++){
-    particles.push(makeParticle());
-  }
+  for(let i=0;i<PART.count;i++) particles.push(make());
 }
-
-function makeParticle(){
-  const type = P.type;
-  const size = Math.random()*P.maxSize + 0.3;
+function make(){
+  const size = (Math.random() * PART.maxSize) + 0.4;
   const x = Math.random()*canvas.width;
   const y = Math.random()*canvas.height;
-  const vx = (Math.random()-0.5)*P.speed;
-  const vy = (Math.random()-0.5)*P.speed;
-  const life = Math.random()*8000 + 4000;
-  const color = particleColorForTheme();
-  return { x,y,vx,vy,size,life,age:Math.random()*life,type,color,alpha:Math.random()*0.9+0.1 };
+  const vx = (Math.random()-0.5) * PART.speed;
+  const vy = (Math.random()-0.5) * PART.speed;
+  const a = Math.random()*0.9 + 0.1;
+  return { x,y,vx,vy,size,a };
 }
-
-function particleColorForTheme(){
-  // read CSS variable --particle-color from computed styles
-  const comp = getComputedStyle(document.body).getPropertyValue('--particle-color') || "#fff";
-  return comp.trim();
-}
-
-/* draw helpers for types */
-function drawParticle(p){
-  ctx.globalAlpha = p.alpha;
-  if(p.type === 'stars'){
-    // small star: draw radial gradient dot
-    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size*6);
-    g.addColorStop(0, p.color);
-    g.addColorStop(0.6, p.color.replace(')',',0.35)').replace('rgb','rgba'));
-    g.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*2,0,Math.PI*2); ctx.fill();
-    // subtle cross for sparkle
-    ctx.strokeStyle = p.color; ctx.lineWidth = 0.4;
-    ctx.beginPath(); ctx.moveTo(p.x-p.size*3,p.y); ctx.lineTo(p.x+p.size*3,p.y); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(p.x,p.y-p.size*3); ctx.lineTo(p.x,p.y+p.size*3); ctx.stroke();
-  } else if(p.type === 'orbs'){
-    ctx.fillStyle = p.color;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*3,0,Math.PI*2); ctx.fill();
-  } else if(p.type === 'sparks'){
-    // small rectangular spark with trail
-    ctx.fillStyle = p.color;
-    ctx.fillRect(p.x - p.size, p.y - p.size, p.size*2, p.size*2);
-  } else if(p.type === 'bokeh'){
-    const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*8);
-    g.addColorStop(0, p.color);
-    g.addColorStop(0.7, p.color.replace('rgb','rgba').replace(')',',0.12)'));
-    g.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*4,0,Math.PI*2); ctx.fill();
-  } else { // dust
-    ctx.fillStyle = p.color;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*1.5,0,Math.PI*2); ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-}
-
-let lastTime = 0;
-function frame(t){
-  requestAnimationFrame(frame);
-  const dt = t - lastTime; lastTime = t;
+function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  // move & draw
   for(let i=0;i<particles.length;i++){
     const p = particles[i];
-    // motion
-    p.x += p.vx * (dt*0.06);
-    p.y += p.vy * (dt*0.06);
-    p.age += dt;
-    // wrap edges
+    p.x += p.vx;
+    p.y += p.vy;
+    // wrap
     if(p.x < -50) p.x = canvas.width + 50;
     if(p.x > canvas.width + 50) p.x = -50;
     if(p.y < -50) p.y = canvas.height + 50;
     if(p.y > canvas.height + 50) p.y = -50;
-    // twinkle for stars
-    if(P.type === 'stars') p.alpha = 0.6 + 0.4*Math.sin((p.age/1000) + (i%5));
-    if(P.type === 'sparks') p.alpha = 0.6 + 0.4*Math.cos((p.age/200)+i);
     drawParticle(p);
   }
 }
-
-/* Configure particle params based on theme id */
+function drawParticle(p){
+  ctx.globalAlpha = p.a;
+  if(PART.type === 'stars'){
+    const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*6);
+    g.addColorStop(0, PART.color);
+    g.addColorStop(0.6, PART.color.replace('rgb','rgba').replace(')',',0.35)'));
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*2,0,Math.PI*2); ctx.fill();
+  } else if(PART.type === 'orbs'){
+    ctx.fillStyle = PART.color;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*3,0,Math.PI*2); ctx.fill();
+  } else if(PART.type === 'bokeh'){
+    const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*8);
+    g.addColorStop(0, PART.color);
+    g.addColorStop(0.7, PART.color.replace('rgb','rgba').replace(')',',0.12)'));
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*4,0,Math.PI*2); ctx.fill();
+  } else {
+    ctx.fillStyle = PART.color;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*1.8,0,Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+function anim(t){
+  requestAnimationFrame(anim);
+  draw();
+}
 function configureParticlesForTheme(themeId){
-  if(themeId === "theme-cosmic"){ P.type='stars'; P.maxSize=1.8; P.speed=0.45; }
-  else if(themeId === "theme-emerald"){ P.type='orbs'; P.maxSize=2.8; P.speed=0.25; }
-  else if(themeId === "theme-cyber"){ P.type='sparks'; P.maxSize=1.6; P.speed=0.9; }
-  else if(themeId === "theme-glass"){ P.type='bokeh'; P.maxSize=6.0; P.speed=0.15; }
-  else if(themeId === "theme-matte"){ P.type='dust'; P.maxSize=1.2; P.speed=0.18; }
-  // reinit particles
+  const p = PART_PRESETS[themeId] || { type:'stars', color: getComputedStyle(document.body).getPropertyValue('--particle-color') || 'rgba(255,255,255,0.9)', size:1.6, speed:0.4 };
+  PART.type = p.type; PART.color = p.color; PART.maxSize = p.size; PART.speed = p.speed;
   initParticles();
 }
 
-/* Start particle animation */
-function startParticles(){
-  configureParticlesForTheme(currentTheme);
-  lastTime = performance.now();
-  frame(lastTime);
-}
+/* start particle system */
+resizeCanvas();
+window.addEventListener('resize', ()=> { debounceResize(); });
+let resizeTimer;
+function debounceResize(){ clearTimeout(resizeTimer); resizeTimer = setTimeout(resizeCanvas, 120); }
 
-/* ===========================
-   Launch
-   =========================== */
-init();
+configureParticlesForTheme(currentTheme);
+anim();
 
-/* ===========================
-   Helper: set initial day based on today
-   =========================== */
-(function autoSelectToday(){
-  const jsDay = new Date().getDay(); const dayMap={0:7,1:1,2:2,3:3,4:4,5:5,6:6};
-  const day = dayMap[jsDay];
-  setActiveDay(day);
-})();
+/* =========================
+   Launch app
+   ========================= */
+initUI();
+
+/* Helper: setActiveDay used earlier, ensure exported */
+window.setActiveDay = setActiveDay;
+window.setTheme = setTheme;
+
+/* Save plans on unload (silent) */
+window.addEventListener('beforeunload', ()=> savePlans());
 
 </script>
 </body>
