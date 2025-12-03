@@ -1,520 +1,596 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Mind & Life Rituals — Multi-Theme Animated (Final)</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<title>Bodybuilding Training System</title>
+
 <style>
-/* =========================
-   GLOBAL THEME VARIABLES (defaults)
-   ========================= */
-:root{
-  --bg-a: #0f1530; --bg-b: #1a2448;
-  --card-bg: rgba(255,255,255,0.04);
-  --accent: #7a6ff0;
-  --text-primary: #eef2ff;
-  --text-secondary: rgba(238,242,255,0.78);
-  --muted: rgba(238,242,255,0.7);
-  --particle-color: rgba(255,255,255,0.95);
-  --glass: rgba(255,255,255,0.03);
-  --radius: 12px;
-  --shadow: 0 10px 30px rgba(0,0,0,0.45);
-}
+  /* ---------- Theme Variables ---------- */
+  :root{
+    --bg: #0d0d0d;
+    --card: #131313;
+    --muted: #bdbdbd;
+    --text: #fff;
+    --accent: #ff2a2a;
+    --accent-2: #ff6b6b;
+    --border: rgba(255,255,255,0.06);
+    --radius: 12px;
+    --gap: 18px;
+    --header-height: 72px; /* Define header height as a variable */
+  }
+  .light{
+    --bg:#f7f7f7; --card:#fff; --muted:#333; --text:#111; --accent:#e60000; --border:rgba(0,0,0,0.08);
+  }
 
-/* ---------- Themes: A, B, C, F ---------- */
-/* Theme A: Purple–Blue Aurora Glow */
-.theme-aurora {
-  --bg-a:#071029; --bg-b:#11204a;
-  --accent:#6f8cff;
-  --card-bg: rgba(255,255,255,0.03);
-  --particle-color: rgba(150,170,255,0.95);
-  --text-primary: #eef4ff;
-  --text-secondary: rgba(238,244,255,0.82);
-}
+  /* ---------- Base ---------- */
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Poppins',sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  /* Adjusted container margin/padding to account for fixed header */
+  .container{
+    width:94%;
+    max-width:1200px;
+    /* Use padding-top to create space for fixed header */
+    padding: calc(var(--header-height) + var(--gap)) var(--gap) 60px;
+    margin: 0 auto;
+  }
+  /* Ensure padding inside container is consistent */
+  .container > div {
+    padding: 0;
+  }
+  @media (max-width: 600px) {
+    /* Slightly less vertical padding on small screens */
+    .container {
+        padding: calc(var(--header-height) + 12px) 12px 30px;
+        width: 100%;
+    }
+  }
 
-/* Theme B: Cosmic Galaxy */
-.theme-cosmic {
-  --bg-a:#02021a; --bg-b:#1a1740;
-  --accent:#9b7bff;
-  --card-bg: rgba(255,255,255,0.03);
-  --particle-color: rgba(255,255,255,0.95);
-  --text-primary: #eef2ff;
-  --text-secondary: rgba(238,242,255,0.78);
-}
 
-/* Theme C: Emerald Forest */
-.theme-emerald {
-  --bg-a:#021e18; --bg-b:#0b5a43;
-  --accent:#34d399;
-  --card-bg: rgba(255,255,255,0.02);
-  --particle-color: rgba(52,211,153,0.9);
-  --text-primary: #eefbf5;
-  --text-secondary: rgba(238,251,245,0.82);
-}
+/* ---------- Header ---------- */
+  header{
+    position:fixed;left:0;right:0;top:0;height:var(--header-height);
+    background:rgba(19, 19, 19, 0.9); /* More solid background for better readability */
+    background:var(--card); /* Simplified background for better theme integration */
+    display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--border);
+    backdrop-filter: blur(6px);
+    z-index:1200; /* High z-index to prevent any overlap */
+  }
+  .light header{ background:rgba(255, 255, 255, 0.95); } /* Light theme background with transparency */
+  header h1{margin:0;font-size:18px;letter-spacing:0.2px}
+  .header-controls{margin-left:auto;display:flex;gap:10px;align-items:center}
+  .plan-selector,.toggle-btn{appearance:none;border-radius:10px;padding:9px 12px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer; font-size:14px; }
+  .toggle-btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border:none;font-weight:700}
+  @media (max-width: 500px) {
+    header h1 { font-size: 16px; }
+    .plan-selector, .toggle-btn { padding: 8px 10px; font-size: 13px; }
+  }
 
-/* Theme F: Glassmorphism White/Silver */
-.theme-glass {
-  --bg-a:#eef2ff; --bg-b:#ffffff;
-  --accent:#7a6ff0;
-  --card-bg: rgba(255,255,255,0.70);
-  --particle-color: rgba(122,111,240,0.18);
-  --text-primary: #111827;
-  --text-secondary: rgba(17,24,39,0.75);
-}
 
-/* =========================
-   BASE LAYOUT & TYPOGRAPHY
-   ========================= */
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Poppins',sans-serif;
-  background: linear-gradient(180deg,var(--bg-a),var(--bg-b)); color:var(--text-primary);
-  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
-a{color:inherit}
+/* ---------- Layout ---------- */
+  .layout{display:grid;grid-template-columns:320px 1fr;gap:var(--gap)}
+  @media (max-width:980px){
+    /* Single column layout for tablets and phones */
+    .layout{grid-template-columns:1fr;padding-top:0}
+  }
 
-header{
-  position:fixed;left:0;right:0;top:0;height:72px;display:flex;align-items:center;padding:12px 20px;
-  gap:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);backdrop-filter:blur(6px);
-  border-bottom:1px solid rgba(255,255,255,0.03);z-index:80;
-}
-.brand{font-weight:700;font-size:16px;color:var(--accent);letter-spacing:0.2px}
+  /* Sidebar styling adjustments */
+  .sidebar{
+    background:var(--card);padding:16px;border-radius:var(--radius);border:1px solid var(--border);
+    min-height:220px;display:flex;flex-direction:column;gap:12px;
+    /* Desktop: sticky position */
+    position:sticky;
+    top: calc(var(--header-height) + var(--gap) - 4px); /* Stick below the header */
+  }
+  @media (max-width:980px){
+    /* Mobile/Tablet: remove sticky, allow flow */
+    .sidebar{
+        position: static;
+    }
+  }
 
-/* controls */
-.controls{margin-left:auto;display:flex;align-items:center;gap:10px}
-.select, .btn{border-radius:10px;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;background:var(--card-bg);color:var(--text-primary);cursor:pointer}
-.btn.primary{background:linear-gradient(90deg,var(--accent),rgba(255,255,255,0.06));color:#fff;border:none;font-weight:600}
+  .panel{background:var(--card);padding:18px;border-radius:var(--radius);border:1px solid var(--border)}
 
-/* canvas particles sits behind header & content */
-#particles{position:fixed;inset:0;z-index:10;pointer-events:none}
+/* ---------- Days Row ---------- */
+  .days{display:flex;flex-wrap:wrap;gap:8px}
+  .day{
+    /* Use min/max to ensure it flexes but doesn't get too small or large */
+    flex:1 1 auto;
+    min-width: calc(100% / 4 - 6px); /* 4 per row on desktop/large tablet */
+    max-width: 120px;
+    background:transparent;border:1px solid var(--border);padding:10px;border-radius:10px;text-align:center;cursor:pointer;transition:all .18s;
+  }
+  @media (max-width: 500px) {
+    /* 3 per row on small phones */
+    .day {
+      min-width: calc(100% / 3 - 6px);
+      max-width: unset;
+    }
+  }
+  .day:hover{transform:translateY(-3px)}
+  .day.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(0,0,0,0.6)}
 
-/* main layout */
-.wrap{width:94%;max-width:1200px;margin:110px auto 60px;display:grid;grid-template-columns:320px 1fr;gap:20px;position:relative;z-index:20}
-@media (max-width:980px){.wrap{grid-template-columns:1fr;padding:20px;margin-top:96px} header{height:64px}}
+/* ---------- Exercises panel ---------- */
+  .exercise-box{display:flex;flex-direction:column;gap:12px}
+  /* Optimized grid for exercise rows */
+  .exercise-row{display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:12px}
+  /* Original media query is a bit low, using the new auto-fit is better, but keep for fallback */
+  @media (max-width:680px){.exercise-row{grid-template-columns:1fr}}
 
-/* sidebar */
-.sidebar{position:sticky;top:86px;background:var(--card-bg);padding:16px;border-radius:var(--radius);border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(6px);box-shadow:var(--shadow)}
-.header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.small{font-size:13px;color:var(--text-secondary)}
+  .exercise-card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    padding:14px;border-radius:10px;border:1px solid var(--border);
+    /* Reduced shadow for lighter look */
+    box-shadow:0 4px 15px rgba(0,0,0,0.3);
+    animation:floatIn .28s ease both;
+  }
+  .exercise-card h3{margin:0 0 8px 0;font-size:16px}
+  .exercise-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
 
-.days{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
-.day{flex:1 1 120px;padding:10px;border-radius:10px;text-align:center;background:transparent;border:1px solid rgba(255,255,255,0.04);cursor:pointer;color:var(--text-primary)}
-.day:hover{transform:translateY(-3px)}
-.day.active{background:linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+/* ---------- Custom Builder ---------- */
+  .builder .input, input, select, textarea{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin-top:10px}
+  .add-btn{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;cursor:pointer;margin-top:10px; transition: background-color 0.2s;}
+  /* Ensure the custom list controls don't break layout */
+  .custom-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;border:1px solid var(--border);flex-wrap: wrap; gap: 8px;}
+  .custom-item > div:first-child { flex: 1 1 50%; min-width: 150px; } /* Ensure text has space */
+  .custom-item > div:last-child { display: flex; gap: 8px; }
 
-/* panel */
-.panel{background:var(--card-bg);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(6px);box-shadow:var(--shadow);min-height:360px}
-.panel h2{margin:0 0 10px 0}
-.muted{color:var(--text-secondary)}
+  /* Adjust buttons inside custom-item */
+  .custom-item .add-btn {
+      width: auto;
+      padding: 8px 10px !important;
+      margin-top: 0 !important;
+      font-size: 13px;
+  }
+  .custom-item .add-btn:first-of-type { /* Edit button style */
+      background: var(--muted);
+      color: var(--text);
+  }
+  .custom-item .add-btn:last-of-type { /* Delete button style */
+      background: #8e1818; /* Darker red */
+  }
 
-/* exercise layout */
-.exercise-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-@media (max-width:680px){ .exercise-row{grid-template-columns:1fr} .card{width:100%} }
+/* ---------- Helpers ---------- */
+  .muted{color:var(--muted)} .mb-8{margin-bottom:8px}
+  @keyframes floatIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .footer{margin-top:16px;color:var(--muted);font-size:13px;text-align:center}
 
-.card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 8px 30px rgba(0,0,0,0.35)}
-.card h3{margin:0 0 8px 0}
-.card p{margin:0;color:var(--text-secondary);line-height:1.6}
-
-/* builder */
-.builder{margin-top:16px;display:flex;flex-direction:column;gap:10px}
-input,select,textarea{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text-primary)}
-textarea{min-height:86px;resize:vertical}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-
-/* theme palette swatches */
-.theme-palette{display:flex;gap:8px;align-items:center}
-.swatch{width:36px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.25)}
-
-/* accessibility focus */
-.day:focus, .select:focus, .btn:focus, .swatch:focus{outline:3px solid rgba(255,255,255,0.06);outline-offset:3px}
-
-/* subtle entrance */
-.card, .day, .panel, .sidebar{transition:all .22s cubic-bezier(.2,.9,.2,1)}
-
-/* small screens tweaks */
-@media (max-width:480px){
-  header{padding:10px}
-  .brand{font-size:15px}
-  .swatch{width:30px;height:30px}
-  .select, .btn{padding:7px 8px}
-}
+/* ---------- Accessibility focus ---------- */
+  .day:focus, .plan-selector:focus, .toggle-btn:focus, .add-btn:focus, .input:focus, .custom-item .add-btn:focus{outline:3px solid rgba(255,42,42,0.3);outline-offset:3px}
 </style>
 </head>
-<body class="theme-cosmic">
-
-<!-- Particle canvas -->
-<canvas id="particles" aria-hidden="true"></canvas>
+<body>
 
 <header>
-  <div style="display:flex;align-items:center;gap:10px">
-    <!-- small logo -->
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#7a6ff0"/><stop offset="1" stop-color="#4da6ff"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#g)"/></svg>
-    <div class="brand">Mind & Life Rituals</div>
-  </div>
-
-  <div class="controls" role="toolbar" aria-label="Controls">
-    <div class="theme-palette" title="Themes (click)">
-      <!-- swatches injected by JS -->
-    </div>
-
-    <select id="plan-select" class="select" aria-label="Select plan"></select>
-    <button id="toggle-theme-button" class="btn" title="Toggle light/dark">Toggle Light</button>
+  <h1>Bodybuilding Training System</h1>
+  <div class="header-controls">
+    <label for="plan-select" class="small muted" style="display:none">Choose plan</label>
+    <select id="plan-select" class="plan-selector" aria-label="Choose training plan"></select>
+    <button id="theme-toggle" class="toggle-btn" onclick="toggleTheme()" aria-pressed="false">🌗 Mode</button>
   </div>
 </header>
 
-<main class="wrap" id="app">
-  <!-- SIDEBAR -->
-  <aside class="sidebar" aria-label="Week planner">
-    <div class="header-row">
+<main class="container">
+  <div class="layout">
+
+    <aside class="sidebar" aria-label="Week Planner">
       <div>
-        <strong>Week Planner</strong>
-        <div class="small muted">Tap a day</div>
+        <h2 style="margin:0 0 8px 0">Week Planner</h2>
+        <p class="small muted mb-8">Tap a day to view exercises. Edit or add custom exercises below.</p>
       </div>
-      <div id="current-theme-name" class="small muted">Cosmic</div>
-    </div>
 
-    <div class="days" id="day-tabs" role="tablist" aria-label="Days">
-      <button class="day" data-day="1" role="tab">Day 1</button>
-      <button class="day" data-day="2" role="tab">Day 2</button>
-      <button class="day" data-day="3" role="tab">Day 3</button>
-      <button class="day" data-day="4" role="tab">Day 4</button>
-      <button class="day" data-day="5" role="tab">Day 5</button>
-      <button class="day" data-day="6" role="tab">Day 6</button>
-      <button class="day" data-day="7" role="tab">Day 7</button>
-    </div>
-
-    <div class="builder" style="margin-top:14px">
-      <label class="small muted">Day</label>
-      <select id="custom-day" aria-label="Select day for custom exercise"></select>
-
-      <label class="small muted">Exercise</label>
-      <input id="custom-exercise" placeholder="e.g. Incline DB Press — 4×10" aria-label="Exercise input" />
-
-      <div class="actions">
-        <button class="btn primary" id="add-ex-btn">Add Exercise</button>
-        <button class="btn" id="clear-day-btn">Clear Day</button>
+      <div class="days" id="day-tabs" role="tablist" aria-label="Days of week">
+        <button class="day" data-day="1" role="tab">Day 1</button>
+        <button class="day" data-day="2" role="tab">Day 2</button>
+        <button class="day" data-day="3" role="tab">Day 3</button>
+        <button class="day" data-day="4" role="tab">Day 4</button>
+        <button class="day" data-day="5" role="tab">Day 5</button>
+        <button class="day" data-day="6" role="tab">Day 6</button>
+        <button class="day" data-day="7" role="tab">Day 7</button>
       </div>
-    </div>
-  </aside>
 
-  <!-- MAIN PANEL -->
-  <section class="panel" aria-live="polite">
-    <div id="exercise-container">
-      <h2>Welcome</h2>
-      <p class="muted">Select a day on the left to view exercises. Theme & data are saved silently in your browser (no messages shown).</p>
-    </div>
+      <div class="builder" aria-label="Custom builder">
+        <h3 style="margin:8px 0 0 0">Custom Workout Builder</h3>
+        <small class="small muted">Add an exercise for selected day (saved locally).</small>
 
-    <div class="builder" style="margin-top:18px">
-      <label class="small muted">Notes / Ritual</label>
-      <textarea id="notes" placeholder="Write your ritual / notes here..." aria-label="Notes"></textarea>
-    </div>
-  </section>
+        <select id="custom-day" class="input" aria-label="Choose day for custom exercise"></select>
+        <input id="custom-exercise" class="input" placeholder="Enter Exercise (e.g. Cable Fly — 4×12)" aria-label="Exercise description" />
+        <button class="add-btn" onclick="addCustomExercise()">Add Exercise</button>
+
+        <div id="custom-list" class="custom-list" aria-live="polite"></div>
+      </div>
+    </aside>
+
+    <section class="panel">
+      <div id="exercise-container" class="exercise-box" aria-live="polite">
+        <h2 style="margin:0 0 8px 0">Select a day</h2>
+        <p class="muted small">Choose a day from the left to view the workout. Use the plan selector at top to change programs.</p>
+      </div>
+
+      <div class="footer">Tip: Your custom changes are saved to your browser. Use the theme button to toggle light/dark.</div>
+    </section>
+
+  </div>
 </main>
 
 <script>
-/* =========================
-   Config & Data
-   ========================= */
-const THEMES = [
-  { id: "theme-aurora", name: "Aurora" },
-  { id: "theme-cosmic", name: "Cosmic" },
-  { id: "theme-emerald", name: "Emerald" },
-  { id: "theme-glass", name: "Glass" }
-];
-
-const PART_PRESETS = {
-  "theme-aurora": { type: "stars", color: "rgba(150,170,255,0.95)", size: 1.8, speed: 0.5 },
-  "theme-cosmic": { type: "stars", color: "rgba(255,255,255,0.95)", size: 1.6, speed: 0.45 },
-  "theme-emerald": { type: "orbs",  color: "rgba(52,211,153,0.9)", size: 2.8, speed: 0.28 },
-  "theme-glass":  { type: "bokeh", color: "rgba(122,111,240,0.14)", size: 6.0, speed: 0.18 }
-};
-
-/* LocalStorage keys (silent usage) */
-const LS_THEME = "mlr_theme_final";
-const LS_PLANS = "mlr_plans_final";
-const LS_NOTES = "mlr_notes_final";
-
-/* Default plans (Option B-like) */
+/* ---------------- DEFAULT PLANS (Option B — Medium selections) ---------------- */
 const defaultPlans = {
-  "Rituals — Default": {
-    1: { title: "Gym Ritual", exercises: ["Warm-up 10 min", "Mindful breathing 3 min", "Barbell Bench Press — 4×8", "Incline DB Press — 4×10", "Cable Fly — 3×12"] },
-    2: { title: "Love Ritual", exercises: ["Gratitude journal 5 min", "Affirmation — 'I am worthy' ×3", "Quality listening: 5 min"] },
-    3: { title: "Interview Ritual", exercises: ["Resume review 10 min", "Mock Q&A 15 min", "Confidence primer — posture & breath"] },
-    4: { title: "Legs & Mobility", exercises: ["Back Squat — 4×6", "Romanian Deadlift — 3×8", "Leg Press — 3×10"] },
-    5: { title: "Focus & Flow", exercises: ["Cold splash 30s", "Breathwork — 5-5-5", "Visualization 5 min"] },
-    6: { title: "Arms & Shoulders", exercises: ["Overhead Press — 4×8", "Lateral Raise — 4×12", "Barbell Curl — 4×8"] },
-    7: { title: "Rest & Reset", exercises: ["Meditation 10 min", "Reflective journaling 7 min"] }
+  "Chest Priority": {
+    1:{title:"Chest — Heavy & Volume", exercises:[
+      "Barbell Bench Press — 5×5",
+      "Incline Dumbbell Press — 4×8–10",
+      "Flat Dumbbell Press — 4×10",
+      "Cable Fly (Low to High) — 4×12",
+      "Chest Dips (weighted if possible) — 3×AMRAP",
+      "Dumbbell Pullover — 3×12"
+    ]},
+    2:{title:"Back — Width & Thickness", exercises:[
+      "Deadlift — 4×4–6",
+      "Weighted Pull-ups — 4×6–10",
+      "Bent-Over Barbell Row — 4×6–8",
+      "Seated Cable Row — 4×10",
+      "Lat Pulldown (wide grip) — 3×10–12"
+    ]},
+    3:{title:"Shoulders & Traps", exercises:[
+      "Overhead Barbell Press — 4×6–8",
+      "Dumbbell Lateral Raise — 4×12–15",
+      "Rear Delt Fly / Face Pulls — 4×12",
+      "Barbell Shrugs — 4×10",
+      "Arnold Press — 3×10"
+    ]},
+    4:{title:"Legs — Quad Focus", exercises:[
+      "Back Squat — 5×5",
+      "Leg Press — 4×10",
+      "Walking Lunges — 3×12 each leg",
+      "Leg Extension — 4×12",
+      "Standing Calf Raises — 4×15–20"
+    ]},
+    5:{title:"Chest — Pump & Volume", exercises:[
+      "Incline Bench — 4×8–10",
+      "Decline Dumbbell Press — 4×10",
+      "Cable Crossover — 4×15",
+      "Pec Deck / Machine Fly — 3×12",
+      "Push-Ups (slow tempo) — 3×AMRAP"
+    ]},
+    6:{title:"Arms — Biceps & Triceps", exercises:[
+      "Barbell Curl — 4×8–10",
+      "Hammer Curl — 4×10–12",
+      "Preacher Curl — 3×10",
+      "Skull Crushers — 4×8–10",
+      "Triceps Rope Pushdown — 4×12",
+      "Reverse Wrist Curl — 3×15"
+    ]},
+    7:{title:"Rest & Mobility", exercises:[
+      "Light Stretching — 15–20 min",
+      "Foam Rolling — 10 min",
+      "Optional Light Walk — 20–30 min"
+    ]}
+  },
+
+  "Gymrat PPL": {
+    1:{title:"Push — Chest/Shoulders/Triceps", exercises:[
+      "Barbell Bench Press — 5×5",
+      "Overhead Press — 4×6–8",
+      "Incline Dumbbell Press — 4×8–10",
+      "Lateral Raises — 4×12",
+      "Triceps Dips — 3×AMRAP"
+    ]},
+    2:{title:"Pull — Back/Biceps", exercises:[
+      "Deadlift — 4×4–6",
+      "Pull Ups — 4×6–10",
+      "One-Arm Dumbbell Row — 4×8–10",
+      "Face Pulls — 4×12",
+      "EZ Bar Curl — 3×10"
+    ]},
+    3:{title:"Legs — Full", exercises:[
+      "Squat — 5×5",
+      "Romanian Deadlift — 4×8",
+      "Leg Press — 4×10",
+      "Hamstring Curl — 4×12",
+      "Seated Calf Raise — 4×15"
+    ]},
+    4:{title:"Push — Volume", exercises:[
+      "Incline Bench — 4×10",
+      "Dumbbell Shoulder Press — 4×10",
+      "Chest Fly — 4×12",
+      "Triceps Pushdown — 4×12"
+    ]},
+    5:{title:"Pull — Volume", exercises:[
+      "Lat Pulldown — 4×12",
+      "Cable Row — 4×12",
+      "Hammer Curl — 4×12",
+      "Rear Delt Raises — 3×15"
+    ]},
+    6:{title:"Legs — Hypertrophy", exercises:[
+      "Front Squat — 4×8",
+      "Bulgarian Split Squat — 3×10",
+      "Glute Bridge — 4×12",
+      "Calf Raise — 4×20"
+    ]},
+    7:{title:"Rest", exercises:[
+      "Mobility Work — 15 min",
+      "Optional Swim/Walk — 20–30 min"
+    ]}
+  },
+
+  "Fat-Loss Hybrid": {
+    1:{title:"Chest + HIIT", exercises:[
+      "Incline DB Press — 4×12",
+      "Push-ups — 3×15–20",
+      "Cable Fly — 3×15",
+      "HIIT Sprints — 12–15 min"
+    ]},
+    2:{title:"Back + Core", exercises:[
+      "Pull Ups — 4×8–10",
+      "Seated Row — 4×12",
+      "Plank — 3×60s",
+      "Mountain Climbers — 3×30s"
+    ]},
+    3:{title:"Legs + Cardio", exercises:[
+      "Squat — 4×10",
+      "Walking Lunges — 3×12",
+      "Kettlebell Swing — 4×12",
+      "Bike — 20 min steady"
+    ]},
+    4:{title:"Shoulders & Arms", exercises:[
+      "Overhead Press — 4×8",
+      "Side Lateral — 4×12",
+      "Bicep Curl — 4×10",
+      "Triceps Rope — 4×12"
+    ]},
+    5:{title:"Full Body Metcon", exercises:[
+      "Thrusters — 4×10",
+      "Burpees — 3×15",
+      "Row — 500m x3 (rest between sets)",
+      "Core Circuit — 10 min"
+    ]},
+    6:{title:"Active Recovery", exercises:[
+      "Yoga Flow — 20 min",
+      "Light Cardio — 20 min"
+    ]},
+    7:{title:"Rest", exercises:[
+      "Stretching — 15 min"
+    ]}
+  },
+
+  "Aesthetic Split": {
+    1:{title:"Chest & Shoulders", exercises:[
+      "Flat Bench — 4×8",
+      "Incline Fly — 4×12",
+      "Lateral Raise — 4×15",
+      "Cable Fly — 3×15"
+    ]},
+    2:{title:"Back & Arms", exercises:[
+      "Deadlift — 4×6",
+      "Pull Ups — 4×8",
+      "Barbell Row — 4×8",
+      "EZ Bar Curl — 4×10"
+    ]},
+    3:{title:"Legs", exercises:[
+      "Squat — 4×8",
+      "Leg Press — 4×10",
+      "Hamstring Curl — 4×12",
+      "Standing Calf — 4×15"
+    ]},
+    4:{title:"Chest Pump", exercises:[
+      "Incline DB Press — 4×10",
+      "Cable Crossover — 4×15",
+      "Push-Ups — 3×AMRAP"
+    ]},
+    5:{title:"Shoulders & Arms", exercises:[
+      "OHP — 4×8",
+      "Hammer Curl — 4×12",
+      "Skull Crushers — 4×10"
+    ]},
+    6:{title:"Full Body Pump", exercises:[
+      "Bench — 3×10",
+      "Row — 3×12",
+      "Squat — 3×12",
+      "Core Work — 8–10 min"
+    ]},
+    7:{title:"Rest", exercises:[
+      "Mobility — 15 min"
+    ]}
   }
 };
 
-/* =========================
-   State
-   ========================= */
-let currentTheme = localStorage.getItem(LS_THEME) || "theme-cosmic";
-let plans = JSON.parse(localStorage.getItem(LS_PLANS)) || defaultPlans;
-let currentPlanName = Object.keys(plans)[0];
-let workouts = JSON.parse(JSON.stringify(plans[currentPlanName])); // deep copy
-let currentDay = 1;
+/* ---------------- LOAD / INIT ---------------- */
+let currentPlanName = localStorage.getItem("planName") || "Chest Priority";
+let workouts = JSON.parse(localStorage.getItem("workouts")) || JSON.parse(JSON.stringify(defaultPlans[currentPlanName]));
 
-/* DOM refs */
-const body = document.body;
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
-const swatchesContainer = document.querySelector(".theme-palette");
-const currentThemeNameEl = document.getElementById("current-theme-name");
-const dayTabs = document.getElementById("day-tabs");
-const exerciseContainer = document.getElementById("exercise-container");
-const customDay = document.getElementById("custom-day");
-const customExercise = document.getElementById("custom-exercise");
-const addExBtn = document.getElementById("add-ex-btn");
-const clearDayBtn = document.getElementById("clear-day-btn");
-const notesEl = document.getElementById("notes");
-const planSelect = document.getElementById("plan-select");
-const toggleThemeButton = document.getElementById("toggle-theme-button");
+/* ---------- Populate plan select ---------- */
+const planSelect = document.getElementById('plan-select');
+Object.keys(defaultPlans).forEach(name=>{
+  const opt = document.createElement('option');
+  opt.value = name; opt.textContent = name;
+  planSelect.appendChild(opt);
+});
+planSelect.value = currentPlanName;
+planSelect.addEventListener('change', () => {
+  currentPlanName = planSelect.value;
+  // Deep clone default plan to 'workouts' when a new one is selected
+  workouts = JSON.parse(JSON.stringify(defaultPlans[currentPlanName])); 
+  saveWorkouts();
+  // Select day 1 after changing plan
+  showExercises(1); 
+});
 
-/* =========================
-   Init UI
-   ========================= */
-function initUI(){
-  // apply theme
-  applyTheme(currentTheme);
+/* ---------- Populate custom day select ---------- */
+const customDay = document.getElementById('custom-day');
+for(let i=1;i<=7;i++){ const o=document.createElement('option'); o.value=i; o.textContent='Day '+i; customDay.appendChild(o); }
 
-  // populate swatches
-  THEMES.forEach(t=>{
-    const d = document.createElement("div");
-    d.className = "swatch";
-    d.title = t.name;
-    // simple gradient preview based on theme id
-    if(t.id === "theme-aurora") d.style.background = "linear-gradient(135deg,#071029,#11204a)";
-    if(t.id === "theme-cosmic") d.style.background = "linear-gradient(135deg,#02021a,#1a1740)";
-    if(t.id === "theme-emerald") d.style.background = "linear-gradient(135deg,#022b20,#0b5a43)";
-    if(t.id === "theme-glass") d.style.background = "linear-gradient(135deg,#eef2ff,#ffffff)";
-    d.onclick = ()=> setTheme(t.id);
-    swatchesContainer.appendChild(d);
-  });
-
-  currentThemeNameEl.textContent = THEMES.find(t=>t.id===currentTheme).name || currentTheme;
-
-  // plan select
-  Object.keys(plans).forEach(p => {
-    const o = document.createElement("option"); o.value = p; o.textContent = p; planSelect.appendChild(o);
-  });
-  planSelect.value = currentPlanName;
-  planSelect.onchange = ()=>{
-    currentPlanName = planSelect.value;
-    workouts = JSON.parse(JSON.stringify(plans[currentPlanName]));
-    showExercises(currentDay);
-    savePlans();
-  };
-
-  // custom day options
-  for(let i=1;i<=7;i++){ const o=document.createElement("option"); o.value = i; o.textContent = "Day "+i; customDay.appendChild(o); }
-
-  // day buttons click
-  Array.from(dayTabs.querySelectorAll(".day")).forEach(btn=>{
-    btn.addEventListener("click", ()=> setActiveDay(Number(btn.dataset.day)));
-  });
-
-  addExBtn.addEventListener("click", ()=> {
-    const d = Number(customDay.value || currentDay);
-    const ex = customExercise.value.trim();
-    if(!ex) return;
-    if(!workouts[d]) workouts[d] = { title: `Day ${d}`, exercises: [] };
-    workouts[d].exercises.push(ex);
-    customExercise.value = "";
+/* ---------- Day buttons ---------- */
+const dayTabs = document.getElementById('day-tabs');
+dayTabs.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.day');
+  if(btn){
+    const d = btn.dataset.day;
+    document.getElementById('custom-day').value = d;
     showExercises(d);
-    savePlans(); // silent
-  });
-
-  clearDayBtn.addEventListener("click", ()=> {
-    const d = Number(customDay.value || currentDay);
-    if(workouts[d]) workouts[d].exercises = [];
-    showExercises(d);
-    savePlans();
-  });
-
-  notesEl.value = localStorage.getItem(LS_NOTES) || "";
-  notesEl.addEventListener("input", ()=> localStorage.setItem(LS_NOTES, notesEl.value)); // silent
-
-  toggleThemeButton.addEventListener("click", ()=> {
-    // toggle between glass and cosmic for quick preview
-    setTheme(body.classList.contains("theme-glass") ? "theme-cosmic" : "theme-glass");
-  });
-
-  // auto day based on today
-  const jsDay = new Date().getDay(); const dayMap = {0:7,1:1,2:2,3:3,4:4,5:5,6:6};
-  setActiveDay(dayMap[jsDay]);
-}
-
-/* =========================
-   Theme handling
-   ========================= */
-function applyTheme(themeId){
-  // remove other theme classes
-  document.body.classList.remove(...Array.from(document.body.classList).filter(c=>c.startsWith("theme-")));
-  document.body.classList.add(themeId);
-  currentTheme = themeId;
-  localStorage.setItem(LS_THEME, themeId); // silent
-  const themeObj = THEMES.find(t=>t.id===themeId) || { name: themeId };
-  currentThemeNameEl.textContent = themeObj.name || themeId;
-  // ensure days & text contrast work: use CSS variables defined in theme blocks; but also set fallback for text if missing
-  adaptContrastForTheme(themeId);
-  configureParticlesForTheme(themeId);
-}
-
-function setTheme(id){
-  applyTheme(id);
-}
-
-/* Auto-adjust contrast fallback (ensures day text visible) */
-function adaptContrastForTheme(id){
-  // For glass (light) set dark text variables on :root for UI elements that might be lost
-  if(id === "theme-glass"){
-    document.documentElement.style.setProperty('--text-primary', '#111827');
-    document.documentElement.style.setProperty('--text-secondary', 'rgba(17,24,39,0.75)');
-  } else {
-    document.documentElement.style.setProperty('--text-primary', getComputedStyle(document.body).getPropertyValue('--text-primary') || '#eef2ff');
-    document.documentElement.style.setProperty('--text-secondary', getComputedStyle(document.body).getPropertyValue('--text-secondary') || 'rgba(238,242,255,0.78)');
   }
-  // force-day text color usage by applying inline styles to day buttons if necessary (safer)
-  Array.from(document.querySelectorAll('.day')).forEach(d=>{
-    d.style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim();
-  });
-}
+});
 
-/* =========================
-   Workouts UI
-   ========================= */
-function setActiveDay(d){
-  currentDay = Number(d);
-  Array.from(dayTabs.querySelectorAll('.day')).forEach(b=> b.classList.toggle('active', Number(b.dataset.day)===currentDay));
-  customDay.value = currentDay;
-  showExercises(currentDay);
-}
-
+/* ---------- Show exercises ---------- */
 function showExercises(day){
-  const data = workouts[day] || { title: `Day ${day}`, exercises: [] };
-  let html = `<h2 style="margin:0 0 8px 0">${escapeHtml(data.title)}</h2>`;
+  // active style
+  document.querySelectorAll('.day').forEach(x=>x.classList.remove('active'));
+  const clicked = document.querySelector(`.day[data-day="${day}"]`);
+  if(clicked){ 
+    clicked.classList.add('active'); 
+    clicked.focus(); // Set focus for accessibility
+  }
+
+  const data = workouts[day];
+  const box = document.getElementById('exercise-container');
+  if(!data){ box.innerHTML = '<h2>Day not found</h2>'; return; }
+
+  // Build layout: heading + exercise cards
+  let html = `<h2 style="margin:0 0 10px 0">${data.title}</h2>`;
   html += `<div class="exercise-row">`;
-  const exs = data.exercises || [];
-  const half = Math.ceil(exs.length/2);
-  const col1 = exs.slice(0, half);
-  const col2 = exs.slice(half);
-  html += `<div class="card"><h3>Primary</h3><p>${col1.length ? col1.map(e=>'• '+escapeHtml(e)).join('<br/>') : '• None'}</p></div>`;
-  html += `<div class="card"><h3>Secondary</h3><p>${col2.length ? col2.map(e=>'• '+escapeHtml(e)).join('<br/>') : '• Rest / Mobility'}</p></div>`;
-  html += `</div>`;
-  exerciseContainer.innerHTML = html;
+
+  // Filter out custom exercises which will be loaded in the sidebar list
+  const defaultEx = data.exercises.filter(ex => {
+      // Check if the exercise is present in the original default plan
+      const currentPlanDefault = defaultPlans[currentPlanName][day];
+      return currentPlanDefault && currentPlanDefault.exercises.includes(ex);
+  });
+  
+  // Custom exercises are any that are NOT in the default plan for the selected day/plan.
+  const customEx = data.exercises.filter(ex => {
+      const currentPlanDefault = defaultPlans[currentPlanName][day];
+      return !currentPlanDefault || !currentPlanDefault.exercises.includes(ex);
+  });
+  
+  // Decide which list to use for the main cards - custom ones will be shown below
+  const primaryList = defaultEx.length > 0 ? defaultEx : data.exercises;
+  
+  // split exercises into two columns evenly
+  const perCol = Math.ceil(primaryList.length / 2);
+  const col1 = primaryList.slice(0, perCol);
+  const col2 = primaryList.slice(perCol);
+
+  html += `<div class="exercise-card"><h3>Primary Focus</h3><p>${col1.map(e=>'• '+escapeHtml(e)).join('<br>')}</p></div>`;
+  // If no secondary/accessory exercises, use a sensible default text
+  const secondaryContent = col2.length ? 
+      col2.map(e=>'• '+escapeHtml(e)).join('<br>') : 
+      (col1.length > 0 ? '• Accessory work / Finisher' : '• Rest / Mobility');
+      
+  html += `<div class="exercise-card"><h3>Secondary / Accessories</h3><p>${secondaryContent}</p></div>`;
+
+  html += `</div>`; // exercise-row
+
+  box.innerHTML = html;
+  loadCustomList(day);
 }
 
-/* =========================
-   Persistence (silent)
-   ========================= */
-function savePlans(){
-  plans[currentPlanName] = JSON.parse(JSON.stringify(workouts));
-  localStorage.setItem(LS_PLANS, JSON.stringify(plans));
+/* ---------- Custom builder functions ---------- */
+function loadCustomList(day){
+  const list = document.getElementById('custom-list');
+  list.innerHTML = '';
+  
+  // Find all exercises that are NOT in the default plan for this day
+  const defaultExercises = defaultPlans[currentPlanName][day].exercises;
+  const customExercises = (workouts[day].exercises || []).filter(ex => !defaultExercises.includes(ex));
+  
+  if (customExercises.length === 0) {
+      list.innerHTML = `<p class="small muted" style="margin-top:10px">No custom exercises for Day ${day}.</p>`;
+      return;
+  }
+  
+  // Re-index based on the filtered custom list
+  customExercises.forEach((ex,i)=>{
+    // Find the original index in the main 'workouts' array to allow for correct deletion/editing
+    const originalIndex = workouts[day].exercises.indexOf(ex); 
+      
+    const wrapper = document.createElement('div'); wrapper.className='custom-item';
+    const left = document.createElement('div');
+    left.innerHTML = `<strong style="display:block">${ex}</strong><span class="small muted">Day ${day} • Custom #${i+1}</span>`;
+    const actions = document.createElement('div');
+    const editBtn = document.createElement('button'); 
+    editBtn.textContent='Edit'; 
+    editBtn.className='add-btn'; 
+    editBtn.onclick = ()=> editExercise(day,originalIndex);
+    
+    const delBtn = document.createElement('button'); 
+    delBtn.textContent='Delete'; 
+    delBtn.className='add-btn'; 
+    delBtn.onclick = ()=> deleteExercise(day,originalIndex);
+    
+    actions.appendChild(editBtn); actions.appendChild(delBtn);
+    wrapper.appendChild(left); wrapper.appendChild(actions);
+    list.appendChild(wrapper);
+  });
+  document.getElementById('custom-day').value = day;
 }
 
-/* =========================
-   Utilities
-   ========================= */
-function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function addCustomExercise(){
+  const day = document.getElementById('custom-day').value;
+  const ex = document.getElementById('custom-exercise').value.trim();
+  if(!ex){ alert('Enter a valid exercise'); return; }
+  
+  // Add new custom exercise to the end of the day's exercise list
+  workouts[day].exercises.push(ex);
+  saveWorkouts();
+  document.getElementById('custom-exercise').value = '';
+  showExercises(day);
+}
 
-/* =========================
-   PARTICLES (canvas) - optimized, different types per theme
-   ========================= */
-let particles = [], last = 0;
-const ctxRef = ctx;
-let PART = { count: 120, maxSize: 2.0, speed: 0.4, type: 'stars', color: 'rgba(255,255,255,0.9)' };
-
-function resizeCanvas(){
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-  const area = canvas.width * canvas.height;
-  PART.count = area > 1600000 ? 180 : area > 700000 ? 120 : 70;
-  initParticles();
-}
-function initParticles(){
-  particles = [];
-  for(let i=0;i<PART.count;i++) particles.push(make());
-}
-function make(){
-  const size = (Math.random() * PART.maxSize) + 0.4;
-  const x = Math.random()*canvas.width;
-  const y = Math.random()*canvas.height;
-  const vx = (Math.random()-0.5) * PART.speed;
-  const vy = (Math.random()-0.5) * PART.speed;
-  const a = Math.random()*0.9 + 0.1;
-  return { x,y,vx,vy,size,a };
-}
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  for(let i=0;i<particles.length;i++){
-    const p = particles[i];
-    p.x += p.vx;
-    p.y += p.vy;
-    // wrap
-    if(p.x < -50) p.x = canvas.width + 50;
-    if(p.x > canvas.width + 50) p.x = -50;
-    if(p.y < -50) p.y = canvas.height + 50;
-    if(p.y > canvas.height + 50) p.y = -50;
-    drawParticle(p);
+function editExercise(day,index){
+  const current = workouts[day].exercises[index];
+  const v = prompt('Edit exercise:', current);
+  if(v && v.trim()!==''){ 
+      workouts[day].exercises[index] = v.trim(); 
+      saveWorkouts(); 
+      showExercises(day); 
   }
 }
-function drawParticle(p){
-  ctx.globalAlpha = p.a;
-  if(PART.type === 'stars'){
-    const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*6);
-    g.addColorStop(0, PART.color);
-    g.addColorStop(0.6, PART.color.replace('rgb','rgba').replace(')',',0.35)'));
-    g.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*2,0,Math.PI*2); ctx.fill();
-  } else if(PART.type === 'orbs'){
-    ctx.fillStyle = PART.color;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*3,0,Math.PI*2); ctx.fill();
-  } else if(PART.type === 'bokeh'){
-    const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*8);
-    g.addColorStop(0, PART.color);
-    g.addColorStop(0.7, PART.color.replace('rgb','rgba').replace(')',',0.12)'));
-    g.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*4,0,Math.PI*2); ctx.fill();
-  } else {
-    ctx.fillStyle = PART.color;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.size*1.8,0,Math.PI*2); ctx.fill();
+function deleteExercise(day,index){
+  // Find out if this is a default exercise or a custom one
+  const isDefault = defaultPlans[currentPlanName][day].exercises.includes(workouts[day].exercises[index]);
+  
+  let msg = 'Remove this exercise?';
+  if(isDefault) {
+      msg = 'This is a default exercise. Do you want to remove it from this day? (You can re-add it by switching plans and back.)';
   }
-  ctx.globalAlpha = 1;
-}
-function anim(t){
-  requestAnimationFrame(anim);
-  draw();
-}
-function configureParticlesForTheme(themeId){
-  const p = PART_PRESETS[themeId] || { type:'stars', color: getComputedStyle(document.body).getPropertyValue('--particle-color') || 'rgba(255,255,255,0.9)', size:1.6, speed:0.4 };
-  PART.type = p.type; PART.color = p.color; PART.maxSize = p.size; PART.speed = p.speed;
-  initParticles();
+  
+  if(confirm(msg)){ 
+      workouts[day].exercises.splice(index,1); 
+      saveWorkouts(); 
+      showExercises(day); 
+  }
 }
 
-/* start particle system */
-resizeCanvas();
-window.addEventListener('resize', ()=> { debounceResize(); });
-let resizeTimer;
-function debounceResize(){ clearTimeout(resizeTimer); resizeTimer = setTimeout(resizeCanvas, 120); }
+/* ---------- Save / storage ---------- */
+function saveWorkouts(){ localStorage.setItem('workouts', JSON.stringify(workouts)); localStorage.setItem('planName', currentPlanName); }
 
-configureParticlesForTheme(currentTheme);
-anim();
+/* ---------- Auto-select today ---------- */
+const jsDay = new Date().getDay();
+const dayMap = {0:7,1:1,2:2,3:3,4:4,5:5,6:6};
+showExercises(dayMap[jsDay]);
 
-/* =========================
-   Launch app
-   ========================= */
-initUI();
+/* ---------- Theme ---------- */
+const themeToggle = document.getElementById('theme-toggle');
+if(localStorage.getItem('theme')==='light'){
+    document.body.classList.add('light');
+    themeToggle.setAttribute('aria-pressed', 'true');
+} else {
+    themeToggle.setAttribute('aria-pressed', 'false');
+}
 
-/* Helper: setActiveDay used earlier, ensure exported */
-window.setActiveDay = setActiveDay;
-window.setTheme = setTheme;
+function toggleTheme(){
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  themeToggle.setAttribute('aria-pressed', isLight? 'true' : 'false');
+  localStorage.setItem('theme', isLight? 'light':'dark');
+}
 
-/* Save plans on unload (silent) */
-window.addEventListener('beforeunload', ()=> savePlans());
-
+/* ---------- Utility ---------- */
+function escapeHtml(text){
+  return String(text).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
 </script>
+
 </body>
 </html>
