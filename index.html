@@ -1,195 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Bodybuilding Plan</title>
+
 <style>
 /* ---------------- ROOT VARIABLES ---------------- */
 :root {
-  --bg:#0d0d0d; --card:#1a1a1a; --text:#fff; --accent:#ff2a2a; --border:#333;
+    --bg: #0d0d0d;
+    --card: #1a1a1a;
+    --text: #fff;
+    --accent: #ff2a2a;
+    --border: #333;
 }
-.light { --bg:#f7f7f7; --card:#fff; --text:#000; --accent:#e60000; --border:#ccc; }
-body { font-family:"Poppins",sans-serif; margin:0; background:var(--bg); color:var(--text); }
-.container { width:90%; max-width:1200px; margin:auto; padding-top:120px; }
-header { position:fixed; top:0; width:100%; background:var(--card); padding:15px; text-align:center; box-shadow:0 0 15px var(--accent); z-index:1000; }
-.toggle-btn { position:absolute; right:20px; top:12px; padding:10px 16px; background:var(--accent); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; }
-.plan-selector { position:absolute; left:20px; top:12px; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--text); }
-/* Days */
-.days { display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
-.day { flex:1; min-width:120px; text-align:center; padding:12px; border-radius:10px; background:var(--card); border:1px solid var(--border); cursor:pointer; transition:.3s; }
-.day:hover { background:var(--accent); color:#fff; }
-.active-day { background:var(--accent); color:#fff; }
-/* Exercise cards */
-.exercise-box { margin-top:30px; padding:20px; background:var(--card); border-radius:12px; border:1px solid var(--border); }
-.exercise-card { background:var(--card); border:1px solid var(--border); margin-bottom:15px; padding:12px; border-radius:10px; opacity:0; transform:translateX(-20px); animation:slideIn .5s forwards; }
-@keyframes slideIn { to{ opacity:1; transform:translateX(0); } }
-/* Custom Builder */
-.builder { margin-top:40px; padding:20px; background:var(--card); border-radius:12px; border:1px solid var(--border); }
-input, select { width:100%; padding:12px; border-radius:8px; background:var(--bg); border:1px solid var(--border); color:var(--text); margin-top:10px; }
-.add-btn { width:100%; margin-top:10px; padding:12px; border:none; background:var(--accent); color:#fff; border-radius:8px; cursor:pointer; font-weight:700; }
-.custom-item { background:var(--card); padding:10px; border-radius:10px; border:1px solid var(--border); margin-top:10px; display:flex; justify-content:space-between; align-items:center; }
-.custom-btns button { margin-left:5px; padding:4px 8px; border-radius:6px; border:none; cursor:pointer; font-weight:600; }
-.edit-btn { background:#2a8cff; color:#fff; } .delete-btn { background:#ff2a2a; color:#fff; }
+.light {
+    --bg: #f7f7f7;
+    --card: #ffffff;
+    --text: #000;
+    --accent: #e60000;
+    --border: #ccc;
+}
+
+/* ---------------- GLOBAL ---------------- */
+body {
+    font-family: "Poppins", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+}
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    padding-top: 80px;
+}
+
+/* ---------------- HEADER ---------------- */
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: var(--card);
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 0 15px var(--accent);
+    z-index: 1000;
+}
+.toggle-btn {
+    position: absolute;
+    right: 20px;
+    top: 12px;
+    padding: 10px 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* ---------------- DAY SELECTOR ---------------- */
+.days {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.day {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: .3s;
+}
+.day:hover { background: var(--accent); color:#fff; }
+.active-day { background: var(--accent); color:#fff; }
+
+/* -------- EXERCISE DISPLAY -------- */
+.exercise-box {
+    margin-top: 30px;
+    padding: 20px;
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+.exercise-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: slideIn .5s forwards;
+}
+@keyframes slideIn {
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* -------- CUSTOM WORKOUT BUILDER -------- */
+.builder {
+    margin-top: 40px;
+    padding: 20px;
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+input, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    margin-top: 10px;
+}
+.add-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+/* Custom exercise list */
+.custom-item {
+    background: var(--card);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.custom-btns button {
+    margin-left: 5px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+.edit-btn { background:#2a8cff; color:#fff; }
+.delete-btn { background:#ff2a2a; color:#fff; }
 </style>
 </head>
+
 <body>
 
 <header>
-  <h1>Bodybuilding Training System</h1>
-  <select class="plan-selector" id="plan-select"></select>
-  <button class="toggle-btn" onclick="toggleTheme()">🌗 Mode</button>
+    <h1>Bodybuilding Training System</h1>
+    <button class="toggle-btn" onclick="toggleTheme()">🌗 Mode</button>
 </header>
 
 <div class="container">
 
-  <!-- DAY SELECTOR -->
-  <div class="days">
-    <div class="day" data-day="1">Day 1</div>
-    <div class="day" data-day="2">Day 2</div>
-    <div class="day" data-day="3">Day 3</div>
-    <div class="day" data-day="4">Day 4</div>
-    <div class="day" data-day="5">Day 5</div>
-    <div class="day" data-day="6">Day 6</div>
-    <div class="day" data-day="7">Day 7</div>
-  </div>
+    <!-- DAY SELECTOR -->
+    <div class="days">
+        <div class="day" data-day="1">Day 1<br>Chest A</div>
+        <div class="day" data-day="2">Day 2<br>Back</div>
+        <div class="day" data-day="3">Day 3<br>Shoulders & Arms</div>
+        <div class="day" data-day="4">Day 4<br>Legs</div>
+        <div class="day" data-day="5">Day 5<br>Chest B</div>
+        <div class="day" data-day="6">Day 6<br>Arms Pump</div>
+        <div class="day" data-day="7">Day 7<br>Rest</div>
+    </div>
 
-  <!-- Exercise Display -->
-  <div id="exercise-container" class="exercise-box"><h2>Select a day</h2></div>
+    <!-- EXERCISE DISPLAY -->
+    <div id="exercise-container" class="exercise-box">
+        <h2>Select a day</h2>
+    </div>
 
-  <!-- Custom Workout Builder -->
-  <div class="builder">
-    <h2 style="color:var(--accent);">Custom Workout Builder</h2>
-    <select id="custom-day"></select>
-    <input type="text" id="custom-exercise" placeholder="Enter Exercise (ex: Cable Fly – 4×12)">
-    <button class="add-btn" onclick="addCustomExercise()">Add Exercise</button>
-    <div id="custom-list"></div>
-  </div>
+    <!-- CUSTOM BUILDER -->
+    <div class="builder">
+        <h2 style="color:var(--accent);">Custom Workout Builder</h2>
+
+        <select id="custom-day">
+            <option value="1">Day 1 - Chest A</option>
+            <option value="2">Day 2 - Back</option>
+            <option value="3">Day 3 - Shoulders & Arms</option>
+            <option value="4">Day 4 - Legs</option>
+            <option value="5">Day 5 - Chest B</option>
+            <option value="6">Day 6 - Arms Pump</option>
+            <option value="7">Day 7 - Rest</option>
+        </select>
+
+        <input type="text" id="custom-exercise" placeholder="Enter Exercise (ex: Cable Fly – 4×12)">
+        <button class="add-btn" onclick="addCustomExercise()">Add Exercise</button>
+
+        <div id="custom-list"></div>
+    </div>
 
 </div>
 
 <script>
-/* ---------------- TRAINING PLAN OPTIONS ---------------- */
-const defaultPlans = {
-  "Chest Priority": {
-    1:{title:"Chest Upper", exercises:["Barbell Bench Press – 5×5","Incline Dumbbell Press – 4×10","Cable Fly – 3×12"]},
-    2:{title:"Back", exercises:["Deadlift – 5×5","Lat Pulldown – 4×10"]},
-    3:{title:"Shoulders & Arms", exercises:["OHP – 4×8","Lateral Raises – 4×15","Bicep Curls – 4×12"]},
-    4:{title:"Legs", exercises:["Squats – 5×5","Leg Press – 4×12"]},
-    5:{title:"Chest Pump", exercises:["Incline Bench – 4×8","DB Fly – 4×12"]},
-    6:{title:"Arms", exercises:["Cable Curls – 4×15","Pushdowns – 4×12"]},
-    7:{title:"Rest Day", exercises:["Stretching – 10 min"]}
-  },
-  "Gymrat PPL": {
-    1:{title:"Push", exercises:["Barbell Bench – 5×5","OHP – 4×8","Dumbbell Fly – 4×12"]},
-    2:{title:"Pull", exercises:["Deadlift – 5×5","Pull Ups – 4×10","Cable Row – 4×12"]},
-    3:{title:"Legs", exercises:["Squats – 5×5","Leg Curl – 4×12","Calf Raises – 4×20"]},
-    4:{title:"Push", exercises:["Incline Bench – 4×8","Shoulder Press – 4×10"]},
-    5:{title:"Pull", exercises:["Lat Pulldown – 4×12","Hammer Curls – 4×12"]},
-    6:{title:"Legs", exercises:["Front Squat – 4×10","Leg Extensions – 4×12"]},
-    7:{title:"Rest Day", exercises:["Stretching – 10 min"]}
-  },
-  "Fat-Loss Hybrid": {
-    1:{title:"Chest & HIIT", exercises:["Incline DB Press – 4×12","Pushups – 3×20","HIIT Sprints – 15 min"]},
-    2:{title:"Back & Core", exercises:["Pull Ups – 4×10","Plank – 3×60s","Row – 4×12"]},
-    3:{title:"Legs & Cardio", exercises:["Squats – 4×12","Lunges – 4×12","Treadmill – 20 min"]},
-    4:{title:"Shoulders & Arms", exercises:["OHP – 4×10","Bicep Curls – 4×12","Triceps Pushdowns – 4×12"]},
-    5:{title:"Chest & HIIT", exercises:["Cable Fly – 4×15","Incline Press – 4×10","Burpees – 3×15"]},
-    6:{title:"Pull Day", exercises:["Deadlift – 4×8","Lat Pulldown – 4×12"]},
-    7:{title:"Rest", exercises:["Stretching – 10 min"]}
-  },
-  "Aesthetic Split": {
-    1:{title:"Chest & Shoulders", exercises:["Barbell Bench – 4×8","Incline Fly – 4×12","Lateral Raises – 4×15"]},
-    2:{title:"Back & Arms", exercises:["Deadlift – 4×6","Pull Ups – 4×10","Bicep Curls – 4×12"]},
-    3:{title:"Legs", exercises:["Squats – 4×8","Leg Press – 4×10","Calf Raises – 4×20"]},
-    4:{title:"Chest Pump", exercises:["Incline DB Press – 4×10","Cable Fly – 4×12"]},
-    5:{title:"Shoulders & Arms", exercises:["OHP – 4×8","Hammer Curls – 4×12","Triceps Dips – 4×12"]},
-    6:{title:"Full Body Pump", exercises:["Bench – 3×10","Row – 3×12","Squat – 3×12"]},
-    7:{title:"Rest", exercises:["Stretching – 10 min"]}
-  }
+/* ---------------- LOAD WORKOUTS FROM STORAGE ---------------- */
+let workouts = JSON.parse(localStorage.getItem("workouts")) || {
+    1: { title: "Chest Day A", exercises: [] },
+    2: { title: "Back Day", exercises: [] },
+    3: { title: "Shoulders & Arms", exercises: [] },
+    4: { title: "Leg Day", exercises: [] },
+    5: { title: "Chest Day B", exercises: [] },
+    6: { title: "Arms Pump", exercises: [] },
+    7: { title: "Rest Day", exercises: [] }
 };
 
-/* ---------------- LOAD OR INIT WORKOUTS ---------------- */
-let currentPlanName = localStorage.getItem("planName") || "Chest Priority";
-let workouts = JSON.parse(localStorage.getItem("workouts")) || JSON.parse(JSON.stringify(defaultPlans[currentPlanName]));
+function saveWorkouts() {
+    localStorage.setItem("workouts", JSON.stringify(workouts));
+}
 
-/* ---------------- POPULATE PLAN SELECT ---------------- */
-const planSelect = document.getElementById("plan-select");
-Object.keys(defaultPlans).forEach(p=>{
-  const opt = document.createElement("option"); opt.value=p; opt.textContent=p;
-  planSelect.appendChild(opt);
+/* ---------------- SHOW EXERCISES IN MAIN SECTION ---------------- */
+function showExercises(day) {
+    document.querySelectorAll(".day").forEach(d => d.classList.remove("active-day"));
+    document.querySelector(`.day[data-day="${day}"]`).classList.add("active-day");
+
+    const box = document.getElementById("exercise-container");
+    const data = workouts[day];
+
+    let html = `<h2>${data.title}</h2>`;
+    data.exercises.forEach((ex, i) => {
+        html += `<div class="exercise-card" style="animation-delay:${i * 0.1}s">${ex}</div>`;
+    });
+
+    box.innerHTML = html;
+
+    loadCustomList(day);
+}
+
+/* ---------------- CUSTOM BUILDER (SHOW LIST) ---------------- */
+function loadCustomList(day) {
+    const list = document.getElementById("custom-list");
+    list.innerHTML = "";
+
+    workouts[day].exercises.forEach((ex, index) => {
+        list.innerHTML += `
+            <div class="custom-item">
+                <span>${ex}</span>
+                <div class="custom-btns">
+                    <button class="edit-btn" onclick="editExercise(${day}, ${index})">Edit</button>
+                    <button class="delete-btn" onclick="deleteExercise(${day}, ${index})">Delete</button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+/* ---------------- ADD CUSTOM EXERCISE ---------------- */
+function addCustomExercise() {
+    const day = document.getElementById("custom-day").value;
+    const exercise = document.getElementById("custom-exercise").value.trim();
+
+    if (!exercise) return alert("Enter a valid exercise!");
+
+    workouts[day].exercises.push(exercise);
+    saveWorkouts();
+
+    document.getElementById("custom-exercise").value = "";
+
+    showExercises(day);
+}
+
+/* ---------------- EDIT CUSTOM EXERCISE ---------------- */
+function editExercise(day, index) {
+    let newText = prompt("Edit Exercise:", workouts[day].exercises[index]);
+    if (newText && newText.trim() !== "") {
+        workouts[day].exercises[index] = newText.trim();
+        saveWorkouts();
+        showExercises(day);
+    }
+}
+
+/* ---------------- DELETE CUSTOM EXERCISE ---------------- */
+function deleteExercise(day, index) {
+    if (confirm("Remove this exercise?")) {
+        workouts[day].exercises.splice(index, 1);
+        saveWorkouts();
+        showExercises(day);
+    }
+}
+
+/* ---------------- DAY CLICK ---------------- */
+document.querySelectorAll(".day").forEach(btn => {
+    btn.onclick = () => {
+        const day = btn.dataset.day;
+        document.getElementById("custom-day").value = day;
+        showExercises(day);
+    };
 });
-planSelect.value = currentPlanName;
-
-/* ---------------- PLAN CHANGE ---------------- */
-planSelect.addEventListener("change",()=>{
-  currentPlanName = planSelect.value;
-  workouts = JSON.parse(JSON.stringify(defaultPlans[currentPlanName]));
-  localStorage.setItem("planName",currentPlanName);
-  localStorage.setItem("workouts",JSON.stringify(workouts));
-  showExercises(1);
-});
-
-/* ---------------- SAVE WORKOUTS ---------------- */
-function saveWorkouts(){ localStorage.setItem("workouts",JSON.stringify(workouts)); }
-
-/* ---------------- DAY SELECT ---------------- */
-document.querySelectorAll(".day").forEach(btn=>btn.onclick=()=>{
-  const day = btn.dataset.day;
-  document.getElementById("custom-day").value = day;
-  showExercises(day);
-});
-
-/* ---------------- SHOW EXERCISES ---------------- */
-function showExercises(day){
-  document.querySelectorAll(".day").forEach(d=>d.classList.remove("active-day"));
-  document.querySelector(`.day[data-day="${day}"]`).classList.add("active-day");
-  const box = document.getElementById("exercise-container");
-  const data = workouts[day];
-  let html = `<h2>${data.title}</h2>`;
-  data.exercises.forEach((ex,i)=>{ html+=`<div class="exercise-card" style="animation-delay:${i*0.1}s">${ex}</div>`; });
-  box.innerHTML = html;
-  loadCustomList(day);
-}
-
-/* ---------------- CUSTOM WORKOUT BUILDER ---------------- */
-function loadCustomList(day){
-  const list = document.getElementById("custom-list"); list.innerHTML="";
-  workouts[day].exercises.forEach((ex,i)=>{
-    list.innerHTML+=`<div class="custom-item"><span>${ex}</span>
-    <div class="custom-btns">
-    <button class="edit-btn" onclick="editExercise(${day},${i})">Edit</button>
-    <button class="delete-btn" onclick="deleteExercise(${day},${i})">Delete</button>
-    </div></div>`;
-  });
-  document.getElementById("custom-day").value = day;
-}
-
-function addCustomExercise(){
-  const day = document.getElementById("custom-day").value;
-  const ex = document.getElementById("custom-exercise").value.trim();
-  if(!ex) return alert("Enter valid exercise!");
-  workouts[day].exercises.push(ex);
-  saveWorkouts(); document.getElementById("custom-exercise").value="";
-  showExercises(day);
-}
-function editExercise(day,index){
-  let newEx = prompt("Edit Exercise:",workouts[day].exercises[index]);
-  if(newEx && newEx.trim()!=""){ workouts[day].exercises[index]=newEx.trim(); saveWorkouts(); showExercises(day);}
-}
-function deleteExercise(day,index){
-  if(confirm("Remove this exercise?")){ workouts[day].exercises.splice(index,1); saveWorkouts(); showExercises(day);}
-}
 
 /* ---------------- AUTO SELECT TODAY ---------------- */
-const jsDay = new Date().getDay(); const dayMap={0:7,1:1,2:2,3:3,4:4,5:5,6:6};
+const jsDay = new Date().getDay();
+const dayMap = {0:7, 1:1, 2:2, 3:3, 4:4, 5:5, 6:6};
 showExercises(dayMap[jsDay]);
 
 /* ---------------- THEME ---------------- */
-if(localStorage.getItem("theme")==="light") document.body.classList.add("light");
-function toggleTheme(){
-  document.body.classList.toggle("light");
-  localStorage.setItem("theme",document.body.classList.contains("light")?"light":"dark");
+if (localStorage.getItem("theme") === "light") document.body.classList.add("light");
+
+function toggleTheme() {
+    document.body.classList.toggle("light");
+    localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
 }
 </script>
 
