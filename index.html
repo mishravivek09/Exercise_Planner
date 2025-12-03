@@ -1,435 +1,354 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Bodybuilding Training System — Responsive (Option B)</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FitFlow — Daily Gym Workouts</title>
 
-<style>
-  /* ---------- Theme Variables ---------- */
-  :root{
-    --bg: #0d0d0d;
-    --card: #131313;
-    --muted: #bdbdbd;
-    --text: #fff;
-    --accent: #ff2a2a;
-    --accent-2: #ff6b6b;
-    --border: rgba(255,255,255,0.06);
-    --radius: 12px;
-    --gap: 18px;
-  }
-  .light{
-    --bg:#f7f7f7; --card:#fff; --muted:#333; --text:#111; --accent:#e60000; --border:rgba(0,0,0,0.08);
-  }
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.5/font/bootstrap-icons.css" rel="stylesheet">
 
-  /* ---------- Base ---------- */
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Poppins',sans-serif;-webkit-font-smoothing:antialiased}
-  a{color:inherit}
-  .container{width:94%;max-width:1200px;margin:120px auto 60px;padding:18px;}
+  <style>
+    :root{--bg:#f8f9fa;--card:#fff;--text:#0b1220;--accent:#0d6efd}
+    [data-theme="dark"]{--bg:#0b1220;--card:#0f1720;--text:#e6eef8;--accent:#66b2ff}
 
-/* ---------- Header ---------- */
-  header{position:fixed;left:0;right:0;top:0;height:72px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--border);backdrop-filter: blur(6px);z-index:1200}
-  header h1{margin:0;font-size:18px;letter-spacing:0.2px}
-  .header-controls{margin-left:auto;display:flex;gap:10px;align-items:center}
-  .plan-selector,.toggle-btn{appearance:none;border-radius:10px;padding:9px 12px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer}
-  .toggle-btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border:none;font-weight:700}
+    body{background:linear-gradient(180deg, var(--bg), #e9eefb);color:var(--text);transition:background .35s, color .35s}
+    header{backdrop-filter: blur(6px)}
+    .card{background:var(--card); border:0; box-shadow:0 6px 18px rgba(12,20,35,.08); transition:transform .22s, box-shadow .22s}
+    .card:hover{transform:translateY(-6px); box-shadow:0 10px 30px rgba(12,20,35,.12)}
+    .exercise-img{height:110px; object-fit:cover; border-radius:8px}
+    .muted-small{font-size:.85rem; color:rgba(11,18,32,.6)}
+    .chip{display:inline-flex;align-items:center;padding:.25rem .5rem;border-radius:999px;background:rgba(13,110,253,.08);color:var(--accent);font-weight:600}
 
-/* ---------- Layout ---------- */
-  .layout{display:grid;grid-template-columns:320px 1fr;gap:var(--gap)}
-  @media (max-width:980px){.layout{grid-template-columns:1fr;padding-top:0}}
-  .sidebar{position:sticky;top:88px;background:var(--card);padding:16px;border-radius:var(--radius);border:1px solid var(--border);min-height:220px;display:flex;flex-direction:column;gap:12px}
-  .panel{background:var(--card);padding:18px;border-radius:var(--radius);border:1px solid var(--border)}
+    /* responsive tweaks for cards */
+    @media (max-width:576px){
+      .exercise-img{height:90px}
+      .sidebar{display:none}
+    }
 
-/* ---------- Days Row ---------- */
-  .days{display:flex;flex-wrap:wrap;gap:8px}
-  .day{flex:1 1 120px;background:transparent;border:1px solid var(--border);padding:10px;border-radius:10px;text-align:center;cursor:pointer;transition:all .18s;min-width:110px}
-  .day:hover{transform:translateY(-3px)}
-  .day.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(0,0,0,0.6)}
+    /* subtle entrance animation */
+    .fade-in-up{opacity:0; transform:translateY(10px); animation:fadeUp .55s forwards}
+    @keyframes fadeUp{to{opacity:1;transform:none}}
 
-/* ---------- Exercises panel ---------- */
-  .exercise-box{display:flex;flex-direction:column;gap:12px}
-  .exercise-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  @media (max-width:680px){.exercise-row{grid-template-columns:1fr}}
-  .exercise-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:14px;border-radius:10px;border:1px solid var(--border);box-shadow:0 8px 30px rgba(0,0,0,0.5);animation:floatIn .28s ease both}
-  .exercise-card h3{margin:0 0 8px 0;font-size:15px}
-  .exercise-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
-
-/* ---------- Custom Builder ---------- */
-  .builder .input, input, select, textarea{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);margin-top:10px}
-  .add-btn{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;cursor:pointer;margin-top:10px}
-  .custom-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-  .custom-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;border:1px solid var(--border)}
-  .small{font-size:13px;color:var(--muted)}
-
-/* ---------- Helpers ---------- */
-  .muted{color:var(--muted)} .mb-8{margin-bottom:8px}
-  @keyframes floatIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .footer{margin-top:16px;color:var(--muted);font-size:13px;text-align:center}
-
-/* ---------- Accessibility focus ---------- */
-  .day:focus, .plan-selector:focus, .toggle-btn:focus, .add-btn:focus{outline:3px solid rgba(255,42,42,0.14);outline-offset:3px}
-</style>
+    /* day pill */
+    .day-pill{font-weight:700; padding:.35rem .7rem; border-radius:999px}
+  </style>
 </head>
-<body>
+<body data-theme="light">
 
-<header>
-  <h1>Bodybuilding Training System</h1>
-  <div class="header-controls">
-    <label for="plan-select" class="small muted" style="display:none">Choose plan</label>
-    <select id="plan-select" class="plan-selector" aria-label="Choose training plan"></select>
-    <button id="theme-toggle" class="toggle-btn" onclick="toggleTheme()" aria-pressed="false">🌗 Mode</button>
-  </div>
-</header>
-
-<main class="container">
-  <div class="layout">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar" aria-label="Week Planner">
+<nav class="navbar navbar-expand-lg sticky-top py-3" style="background:linear-gradient(90deg, rgba(255,255,255,.8), rgba(255,255,255,.65));">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+      <i class="bi bi-heart-pulse-fill fs-3" style="color:var(--accent)"></i>
       <div>
-        <h2 style="margin:0 0 8px 0">Week Planner</h2>
-        <p class="small muted mb-8">Tap a day to view exercises. Edit or add custom exercises below.</p>
+        <div style="font-weight:800">FitFlow</div>
+        <small class="text-muted">Daily Gym Workouts</small>
+      </div>
+    </a>
+
+    <div class="d-flex align-items-center gap-3">
+      <div class="me-2 text-end d-none d-md-block">
+        <div id="todayLabel" class="day-pill bg-light text-secondary"></div>
+        <div id="dateLabel" class="muted-small"></div>
       </div>
 
-      <div class="days" id="day-tabs" role="tablist" aria-label="Days of week">
-        <button class="day" data-day="1" role="tab">Day 1</button>
-        <button class="day" data-day="2" role="tab">Day 2</button>
-        <button class="day" data-day="3" role="tab">Day 3</button>
-        <button class="day" data-day="4" role="tab">Day 4</button>
-        <button class="day" data-day="5" role="tab">Day 5</button>
-        <button class="day" data-day="6" role="tab">Day 6</button>
-        <button class="day" data-day="7" role="tab">Day 7</button>
+      <div class="form-check form-switch me-2">
+        <input class="form-check-input" type="checkbox" id="darkToggle">
+        <label class="form-check-label muted-small" for="darkToggle">Dark</label>
       </div>
 
-      <div class="builder" aria-label="Custom builder">
-        <h3 style="margin:8px 0 0 0">Custom Workout Builder</h3>
-        <small class="small muted">Add an exercise for selected day (saved locally).</small>
+      <button class="btn btn-outline-primary d-md-none" id="openFilters"><i class="bi bi-filter"></i></button>
+    </div>
+  </div>
+</nav>
 
-        <select id="custom-day" class="input" aria-label="Choose day for custom exercise"></select>
-        <input id="custom-exercise" class="input" placeholder="Enter Exercise (e.g. Cable Fly — 4×12)" aria-label="Exercise description" />
-        <button class="add-btn" onclick="addCustomExercise()">Add Exercise</button>
+<main class="container my-4">
+  <div class="row">
+    <!-- Sidebar / Saved Plans -->
+    <aside class="col-lg-3 mb-3 sidebar">
+      <div class="card p-3 mb-3">
+        <h5 class="mb-1">Today's Focus</h5>
+        <p class="muted-small">We recommend workouts based on the weekday.</p>
+        <div class="d-flex gap-2 flex-wrap" id="focusChips"></div>
+      </div>
 
-        <div id="custom-list" class="custom-list" aria-live="polite"></div>
+      <div class="card p-3 mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="mb-0">Saved Plans</h6>
+          <button class="btn btn-sm btn-link text-danger" id="clearPlans">Clear</button>
+        </div>
+        <div id="plansList" class="list-group"></div>
+        <div class="mt-3">
+          <input id="planName" class="form-control form-control-sm mb-2" placeholder="Plan name (eg. Push Day)">
+          <button id="savePlan" class="btn btn-primary btn-sm w-100">Save Current Selection</button>
+        </div>
+      </div>
+
+      <div class="card p-3">
+        <h6 class="mb-2">Quick Filters</h6>
+        <div class="d-flex gap-2 flex-wrap mb-2">
+          <button class="btn btn-outline-secondary btn-sm" data-filter="all">All</button>
+          <button class="btn btn-outline-secondary btn-sm" data-filter="chest">Chest</button>
+          <button class="btn btn-outline-secondary btn-sm" data-filter="back">Back</button>
+          <button class="btn btn-outline-secondary btn-sm" data-filter="legs">Legs</button>
+          <button class="btn btn-outline-secondary btn-sm" data-filter="shoulders">Shoulders</button>
+          <button class="btn btn-outline-secondary btn-sm" data-filter="arms">Arms</button>
+          <button class="btn btn-outline-secondary btn-sm" data-filter="core">Core</button>
+          <button class="btn btn-outline-secondary btn-sm" data-filter="cardio">Cardio</button>
+        </div>
+        <input id="searchBox" class="form-control form-control-sm" placeholder="Search exercise...">
       </div>
     </aside>
 
-    <!-- MAIN PANEL -->
-    <section class="panel">
-      <div id="exercise-container" class="exercise-box" aria-live="polite">
-        <h2 style="margin:0 0 8px 0">Select a day</h2>
-        <p class="muted small">Choose a day from the left to view the workout. Use the plan selector at top to change programs.</p>
+    <!-- Main content -->
+    <section class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Exercises</h4>
+        <div>
+          <small class="muted-small me-2">Choose exercises and build your plan</small>
+          <button id="selectAll" class="btn btn-sm btn-outline-primary me-1">Select all</button>
+          <button id="deselectAll" class="btn btn-sm btn-outline-secondary">Clear</button>
+        </div>
       </div>
 
-      <div class="footer">Tip: Your custom changes are saved to your browser. Use the theme button to toggle light/dark.</div>
-    </section>
+      <div id="exList" class="row g-3"></div>
 
+    </section>
   </div>
 </main>
 
+<footer class="text-center py-4 muted-small">
+  Crafted with <i class="bi bi-heart-fill" style="color:var(--accent)"></i> • FitFlow • &copy; <span id="year"></span>
+</footer>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-/* ---------------- DEFAULT PLANS (Option B — Medium selections) ---------------- */
-const defaultPlans = {
-  "Chest Priority": {
-    1:{title:"Chest — Heavy & Volume", exercises:[
-      "Barbell Bench Press — 5×5",
-      "Incline Dumbbell Press — 4×8–10",
-      "Flat Dumbbell Press — 4×10",
-      "Cable Fly (Low to High) — 4×12",
-      "Chest Dips (weighted if possible) — 3×AMRAP",
-      "Dumbbell Pullover — 3×12"
-    ]},
-    2:{title:"Back — Width & Thickness", exercises:[
-      "Deadlift — 4×4–6",
-      "Weighted Pull-ups — 4×6–10",
-      "Bent-Over Barbell Row — 4×6–8",
-      "Seated Cable Row — 4×10",
-      "Lat Pulldown (wide grip) — 3×10–12"
-    ]},
-    3:{title:"Shoulders & Traps", exercises:[
-      "Overhead Barbell Press — 4×6–8",
-      "Dumbbell Lateral Raise — 4×12–15",
-      "Rear Delt Fly / Face Pulls — 4×12",
-      "Barbell Shrugs — 4×10",
-      "Arnold Press — 3×10"
-    ]},
-    4:{title:"Legs — Quad Focus", exercises:[
-      "Back Squat — 5×5",
-      "Leg Press — 4×10",
-      "Walking Lunges — 3×12 each leg",
-      "Leg Extension — 4×12",
-      "Standing Calf Raises — 4×15–20"
-    ]},
-    5:{title:"Chest — Pump & Volume", exercises:[
-      "Incline Bench — 4×8–10",
-      "Decline Dumbbell Press — 4×10",
-      "Cable Crossover — 4×15",
-      "Pec Deck / Machine Fly — 3×12",
-      "Push-Ups (slow tempo) — 3×AMRAP"
-    ]},
-    6:{title:"Arms — Biceps & Triceps", exercises:[
-      "Barbell Curl — 4×8–10",
-      "Hammer Curl — 4×10–12",
-      "Preacher Curl — 3×10",
-      "Skull Crushers — 4×8–10",
-      "Triceps Rope Pushdown — 4×12",
-      "Reverse Wrist Curl — 3×15"
-    ]},
-    7:{title:"Rest & Mobility", exercises:[
-      "Light Stretching — 15–20 min",
-      "Foam Rolling — 10 min",
-      "Optional Light Walk — 20–30 min"
-    ]}
-  },
+// --------------------------- Data: exercises --------------------------------
+const EXERCISES = [
+  {name:'Barbell Bench Press', muscle:'chest', desc:'Compound pressing movement for chest strength and mass.'},
+  {name:'Dumbbell Incline Press', muscle:'chest', desc:'Targets upper chest and front delts with greater range.'},
+  {name:'Push-Ups', muscle:'chest', desc:'Bodyweight chest builder; great for endurance and form.'},
+  {name:'Chest Fly (Dumbbell)', muscle:'chest', desc:'Isolation move to stretch and finish the chest.'},
 
-  "Gymrat PPL": {
-    1:{title:"Push — Chest/Shoulders/Triceps", exercises:[
-      "Barbell Bench Press — 5×5",
-      "Overhead Press — 4×6–8",
-      "Incline Dumbbell Press — 4×8–10",
-      "Lateral Raises — 4×12",
-      "Triceps Dips — 3×AMRAP"
-    ]},
-    2:{title:"Pull — Back/Biceps", exercises:[
-      "Deadlift — 4×4–6",
-      "Pull Ups — 4×6–10",
-      "One-Arm Dumbbell Row — 4×8–10",
-      "Face Pulls — 4×12",
-      "EZ Bar Curl — 3×10"
-    ]},
-    3:{title:"Legs — Full", exercises:[
-      "Squat — 5×5",
-      "Romanian Deadlift — 4×8",
-      "Leg Press — 4×10",
-      "Hamstring Curl — 4×12",
-      "Seated Calf Raise — 4×15"
-    ]},
-    4:{title:"Push — Volume", exercises:[
-      "Incline Bench — 4×10",
-      "Dumbbell Shoulder Press — 4×10",
-      "Chest Fly — 4×12",
-      "Triceps Pushdown — 4×12"
-    ]},
-    5:{title:"Pull — Volume", exercises:[
-      "Lat Pulldown — 4×12",
-      "Cable Row — 4×12",
-      "Hammer Curl — 4×12",
-      "Rear Delt Raises — 3×15"
-    ]},
-    6:{title:"Legs — Hypertrophy", exercises:[
-      "Front Squat — 4×8",
-      "Bulgarian Split Squat — 3×10",
-      "Glute Bridge — 4×12",
-      "Calf Raise — 4×20"
-    ]},
-    7:{title:"Rest", exercises:[
-      "Mobility Work — 15 min",
-      "Optional Swim/Walk — 20–30 min"
-    ]}
-  },
+  {name:'Pull-Ups', muscle:'back', desc:'Vertical pulling movement for lats and upper back.'},
+  {name:'Bent-Over Row', muscle:'back', desc:'Heavy compound row for thickness and posterior chain.'},
+  {name:'Lat Pulldown', muscle:'back', desc:'Lat-focused alternative to pull-ups for volume.'},
+  {name:'Seated Cable Row', muscle:'back', desc:'Horizontal pulling for mid-back engagement.'},
 
-  "Fat-Loss Hybrid": {
-    1:{title:"Chest + HIIT", exercises:[
-      "Incline DB Press — 4×12",
-      "Push-ups — 3×15–20",
-      "Cable Fly — 3×15",
-      "HIIT Sprints — 12–15 min"
-    ]},
-    2:{title:"Back + Core", exercises:[
-      "Pull Ups — 4×8–10",
-      "Seated Row — 4×12",
-      "Plank — 3×60s",
-      "Mountain Climbers — 3×30s"
-    ]},
-    3:{title:"Legs + Cardio", exercises:[
-      "Squat — 4×10",
-      "Walking Lunges — 3×12",
-      "Kettlebell Swing — 4×12",
-      "Bike — 20 min steady"
-    ]},
-    4:{title:"Shoulders & Arms", exercises:[
-      "Overhead Press — 4×8",
-      "Side Lateral — 4×12",
-      "Bicep Curl — 4×10",
-      "Triceps Rope — 4×12"
-    ]},
-    5:{title:"Full Body Metcon", exercises:[
-      "Thrusters — 4×10",
-      "Burpees — 3×15",
-      "Row — 500m x3 (rest between sets)",
-      "Core Circuit — 10 min"
-    ]},
-    6:{title:"Active Recovery", exercises:[
-      "Yoga Flow — 20 min",
-      "Light Cardio — 20 min"
-    ]},
-    7:{title:"Rest", exercises:[
-      "Stretching — 15 min"
-    ]}
-  },
+  {name:'Back Squat', muscle:'legs', desc:'King of leg exercises — quad and glute powerhouse.'},
+  {name:'Front Squat', muscle:'legs', desc:'Quad-dominant squat with upright torso emphasis.'},
+  {name:'Romanian Deadlift', muscle:'legs', desc:'Hamstring and glute builder with hinge pattern.'},
+  {name:'Leg Press', muscle:'legs', desc:'Brute volume for quads and glutes with controlled load.'},
 
-  "Aesthetic Split": {
-    1:{title:"Chest & Shoulders", exercises:[
-      "Flat Bench — 4×8",
-      "Incline Fly — 4×12",
-      "Lateral Raise — 4×15",
-      "Cable Fly — 3×15"
-    ]},
-    2:{title:"Back & Arms", exercises:[
-      "Deadlift — 4×6",
-      "Pull Ups — 4×8",
-      "Barbell Row — 4×8",
-      "EZ Bar Curl — 4×10"
-    ]},
-    3:{title:"Legs", exercises:[
-      "Squat — 4×8",
-      "Leg Press — 4×10",
-      "Hamstring Curl — 4×12",
-      "Standing Calf — 4×15"
-    ]},
-    4:{title:"Chest Pump", exercises:[
-      "Incline DB Press — 4×10",
-      "Cable Crossover — 4×15",
-      "Push-Ups — 3×AMRAP"
-    ]},
-    5:{title:"Shoulders & Arms", exercises:[
-      "OHP — 4×8",
-      "Hammer Curl — 4×12",
-      "Skull Crushers — 4×10"
-    ]},
-    6:{title:"Full Body Pump", exercises:[
-      "Bench — 3×10",
-      "Row — 3×12",
-      "Squat — 3×12",
-      "Core Work — 8–10 min"
-    ]},
-    7:{title:"Rest", exercises:[
-      "Mobility — 15 min"
-    ]}
-  }
+  {name:'Overhead Press', muscle:'shoulders', desc:'Main compound shoulder builder; also works triceps.'},
+  {name:'Lateral Raise', muscle:'shoulders', desc:'Isolation for side delts and shoulder width.'},
+  {name:'Face Pull', muscle:'shoulders', desc:'Rear delt and upper back health movement.'},
+  {name:'Arnold Press', muscle:'shoulders', desc:'Rotational press for full shoulder development.'},
+
+  {name:'Barbell Curl', muscle:'arms', desc:'Classic biceps strength exercise.'},
+  {name:'Dumbbell Hammer Curl', muscle:'arms', desc:'Brachialis and forearm emphasis.'},
+  {name:'Skull Crushers', muscle:'arms', desc:'Triceps isolation with long head stretch.'},
+  {name:'Tricep Pushdown', muscle:'arms', desc:'Cable movement for triceps peak contraction.'},
+
+  {name:'Plank', muscle:'core', desc:'Static core stability and anti-extension training.'},
+  {name:'Hanging Leg Raise', muscle:'core', desc:'Intense lower-ab focused movement.'},
+  {name:'Russian Twist', muscle:'core', desc:'Rotational core movement for obliques.'},
+  {name:'Ab Wheel Rollout', muscle:'core', desc:'Advanced anti-extension move for core strength.'},
+
+  {name:'Burpees', muscle:'cardio', desc:'Full-body conditioning exercise with high heart rate.'},
+  {name:'Battle Ropes', muscle:'cardio', desc:'Upper-body metcon for power and conditioning.'},
+  {name:'Jump Rope', muscle:'cardio', desc:'Simple, effective cardio for coordination and stamina.'},
+  {name:'Cycling (Stationary)', muscle:'cardio', desc:'Low-impact cardio to build endurance.'},
+
+  {name:'Calf Raise', muscle:'legs', desc:'Isolation to build calf size and strength.'},
+  {name:'Glute Bridge', muscle:'legs', desc:'Glute activation and posterior chain builder.'},
+  {name:'Single-Leg Romanian Deadlift', muscle:'legs', desc:'Balance and hamstring-focused unilateral move.'},
+
+  {name:'Incline Dumbbell Row', muscle:'back', desc:'Upper-back isolation with strict movement.'},
+  {name:'Cable Fly', muscle:'chest', desc:'Adjustable angle fly for chest shaping.'},
+  {name:'EZ-Bar Preacher Curl', muscle:'arms', desc:'Controlled curling for strict peak contraction.'},
+  {name:'Farmer\'s Walk', muscle:'fullbody', desc:'Grip, core and full-body conditioning carry.'},
+  {name:'Turkish Get-Up', muscle:'fullbody', desc:'Mobility and full-body strength sequence.'}
+];
+
+// --------------------------- Day mapping --------------------------------
+const DAY_MAP = {
+  0: {name:'Sunday', focus:['mobility','core','cardio']},
+  1: {name:'Monday', focus:['chest','triceps','shoulders']},
+  2: {name:'Tuesday', focus:['back','biceps']},
+  3: {name:'Wednesday', focus:['legs']},
+  4: {name:'Thursday', focus:['shoulders','chest']},
+  5: {name:'Friday', focus:['arms','core']},
+  6: {name:'Saturday', focus:['fullbody','cardio']}
 };
 
-/* ---------------- LOAD / INIT ---------------- */
-let currentPlanName = localStorage.getItem("planName") || "Chest Priority";
-let workouts = JSON.parse(localStorage.getItem("workouts")) || JSON.parse(JSON.stringify(defaultPlans[currentPlanName]));
+// --------------------------- State --------------------------------
+let selected = new Set();
+const LS_PLANS_KEY = 'fitflow_plans_v1';
+const LS_THEME_KEY = 'fitflow_theme_v1';
 
-/* ---------- Populate plan select ---------- */
-const planSelect = document.getElementById('plan-select');
-Object.keys(defaultPlans).forEach(name=>{
-  const opt = document.createElement('option');
-  opt.value = name; opt.textContent = name;
-  planSelect.appendChild(opt);
-});
-planSelect.value = currentPlanName;
-planSelect.addEventListener('change', () => {
-  currentPlanName = planSelect.value;
-  workouts = JSON.parse(JSON.stringify(defaultPlans[currentPlanName]));
-  saveWorkouts();
-  showExercises(1);
-});
+// --------------------------- Utilities --------------------------------
+function qs(sel, root=document) {return root.querySelector(sel)}
+function qsa(sel, root=document) {return [...root.querySelectorAll(sel)]}
 
-/* ---------- Populate custom day select ---------- */
-const customDay = document.getElementById('custom-day');
-for(let i=1;i<=7;i++){ const o=document.createElement('option'); o.value=i; o.textContent='Day '+i; customDay.appendChild(o); }
+// --------------------------- Rendering --------------------------------
+function renderDate(){
+  const now = new Date();
+  const day = now.getDay();
+  const map = DAY_MAP[day];
+  qs('#todayLabel').textContent = map.name;
+  qs('#dateLabel').textContent = now.toLocaleDateString();
+  const chips = qs('#focusChips'); chips.innerHTML='';
+  map.focus.forEach(f=>{
+    const el = document.createElement('span'); el.className='chip me-1 mb-1'; el.textContent = f.toUpperCase(); chips.appendChild(el);
+  })
+}
 
-/* ---------- Day buttons ---------- */
-document.querySelectorAll('.day').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const d = btn.dataset.day;
-    document.getElementById('custom-day').value = d;
-    showExercises(d);
+function renderExercises(filterTerm='all', search=''){
+  const container = qs('#exList'); container.innerHTML='';
+  const now = new Date(); const dayFocus = DAY_MAP[now.getDay()].focus;
+
+  // sort so day focus appear on top
+  const sorted = EXERCISES.slice().sort((a,b)=>{
+    const ai = dayFocus.includes(a.muscle) ? -1 : 1;
+    const bi = dayFocus.includes(b.muscle) ? -1 : 1;
+    return ai - bi;
   });
-});
 
-/* ---------- Show exercises ---------- */
-function showExercises(day){
-  // active style
-  document.querySelectorAll('.day').forEach(x=>x.classList.remove('active'));
-  const clicked = document.querySelector(`.day[data-day="${day}"]`);
-  if(clicked) clicked.classList.add('active');
+  sorted.forEach((ex,i)=>{
+    const nameLower = ex.name.toLowerCase();
+    if(filterTerm!=='all' && ex.muscle !== filterTerm) return;
+    if(search && !nameLower.includes(search.toLowerCase()) && !ex.muscle.includes(search.toLowerCase())) return;
 
-  const data = workouts[day];
-  const box = document.getElementById('exercise-container');
-  if(!data){ box.innerHTML = '<h2>Day not found</h2>'; return; }
+    const col = document.createElement('div'); col.className='col-md-6 col-lg-4 fade-in-up';
+    col.style.animationDelay = (i*30)+'ms';
 
-  // Build layout: heading + exercise cards
-  let html = `<h2 style="margin:0 0 10px 0">${data.title}</h2>`;
-  html += `<div class="exercise-row">`;
+    const card = document.createElement('div'); card.className='card p-3 h-100';
+    card.innerHTML = `
+      <div class="d-flex gap-3">
+        <img src="https://images.unsplash.com/photo-1558611848-73f7eb4001d5?q=80&w=400&auto=format&fit=crop&s=placeholder" class="exercise-img" alt="${ex.name}">
+        <div class="flex-grow-1">
+          <div class="d-flex justify-content-between align-items-start">
+            <h6 class="mb-1" title="${ex.name}">${ex.name}</h6>
+            <div>
+              <input type="checkbox" class="form-check-input sel-check" data-name="${ex.name}">
+            </div>
+          </div>
+          <div class="muted-small mb-2">${ex.desc}</div>
+          <div class="d-flex gap-2 flex-wrap">
+            <span class="badge bg-light text-secondary">${ex.muscle}</span>
+            <small class="muted-small">${suggestIntensity(ex.muscle)}</small>
+          </div>
+        </div>
+      </div>
+    `;
 
-  // split exercises into two columns evenly
-  const perCol = Math.ceil(data.exercises.length / 2);
-  const col1 = data.exercises.slice(0, perCol);
-  const col2 = data.exercises.slice(perCol);
-
-  html += `<div class="exercise-card"><h3>Primary</h3><p>${col1.map(e=>'• '+escapeHtml(e)).join('<br>')}</p></div>`;
-  html += `<div class="exercise-card"><h3>Secondary / Accessories</h3><p>${col2.length?col2.map(e=>'• '+escapeHtml(e)).join('<br>'):'• Rest / Mobility'}</p></div>`;
-
-  html += `</div>`; // exercise-row
-
-  box.innerHTML = html;
-  loadCustomList(day);
-}
-
-/* ---------- Custom builder functions ---------- */
-function loadCustomList(day){
-  const list = document.getElementById('custom-list');
-  list.innerHTML = '';
-  (workouts[day].exercises || []).forEach((ex,i)=>{
-    const wrapper = document.createElement('div'); wrapper.className='custom-item';
-    const left = document.createElement('div'); left.style.flex='1';
-    left.innerHTML = `<strong style="display:block">${ex}</strong><span class="small muted">Day ${day} • #${i+1}</span>`;
-    const actions = document.createElement('div');
-    const editBtn = document.createElement('button'); editBtn.textContent='Edit'; editBtn.className='add-btn'; editBtn.style.padding='8px 10px'; editBtn.style.marginLeft='8px';
-    editBtn.onclick = ()=> editExercise(day,i);
-    const delBtn = document.createElement('button'); delBtn.textContent='Delete'; delBtn.className='add-btn'; delBtn.style.background='#666'; delBtn.style.marginLeft='8px'; delBtn.onclick = ()=> deleteExercise(day,i);
-    actions.appendChild(editBtn); actions.appendChild(delBtn);
-    wrapper.appendChild(left); wrapper.appendChild(actions);
-    list.appendChild(wrapper);
+    container.appendChild(col);
+    col.appendChild(card);
   });
-  document.getElementById('custom-day').value = day;
+
+  // update checkboxes based on selected
+  qsa('.sel-check').forEach(cb=>{
+    cb.checked = selected.has(cb.dataset.name);
+    cb.addEventListener('change', e=>{
+      if(e.target.checked) selected.add(e.target.dataset.name); else selected.delete(e.target.dataset.name);
+      // silently persist current selection to local storage (no messages)
+      localStorage.setItem('fitflow_current_selection', JSON.stringify([...selected]));
+    })
+  });
 }
 
-function addCustomExercise(){
-  const day = document.getElementById('custom-day').value;
-  const ex = document.getElementById('custom-exercise').value.trim();
-  if(!ex){ alert('Enter a valid exercise'); return; }
-  workouts[day].exercises.push(ex);
-  saveWorkouts();
-  document.getElementById('custom-exercise').value = '';
-  showExercises(day);
+function suggestIntensity(muscle){
+  if(['cardio','fullbody','legs'].includes(muscle)) return 'Intensity: High';
+  if(['core','back','chest'].includes(muscle)) return 'Intensity: Moderate';
+  return 'Intensity: Low-Moderate';
 }
 
-function editExercise(day,index){
-  const current = workouts[day].exercises[index];
-  const v = prompt('Edit exercise:', current);
-  if(v && v.trim()!==''){ workouts[day].exercises[index] = v.trim(); saveWorkouts(); showExercises(day); }
+// --------------------------- Plans --------------------------------
+function loadPlans(){
+  try{
+    const raw = localStorage.getItem(LS_PLANS_KEY); return raw? JSON.parse(raw): [];
+  }catch(e){return []}
 }
-function deleteExercise(day,index){
-  if(confirm('Remove this exercise?')){ workouts[day].exercises.splice(index,1); saveWorkouts(); showExercises(day); }
+function savePlans(plans){ localStorage.setItem(LS_PLANS_KEY, JSON.stringify(plans)); }
+
+function renderPlans(){
+  const list = qs('#plansList'); list.innerHTML='';
+  const plans = loadPlans();
+  if(plans.length===0){ list.innerHTML='<div class="text-muted small">No saved plans yet</div>'; return; }
+  plans.forEach((p,idx)=>{
+    const a = document.createElement('div'); a.className='list-group-item list-group-item-action d-flex justify-content-between align-items-start';
+    a.innerHTML = `<div><strong>${p.name}</strong><div class="muted-small">${p.items.length} exercises</div></div><div class="d-flex gap-2 align-items-center"><button class="btn btn-sm btn-outline-secondary load-plan" data-idx="${idx}">Load</button><button class="btn btn-sm btn-danger del-plan" data-idx="${idx}">Del</button></div>`;
+    list.appendChild(a);
+  });
+
+  qsa('.load-plan').forEach(btn=>btn.addEventListener('click', e=>{
+    const idx = +e.target.dataset.idx; const plans = loadPlans(); const p = plans[idx];
+    selected = new Set(p.items); localStorage.setItem('fitflow_current_selection', JSON.stringify([...selected])); renderExercises(currentFilter, qs('#searchBox').value); renderPlans();
+  }));
+  qsa('.del-plan').forEach(btn=>btn.addEventListener('click', e=>{
+    const idx = +e.target.dataset.idx; let plans = loadPlans(); plans.splice(idx,1); savePlans(plans); renderPlans();
+  }));
 }
 
-/* ---------- Save / storage ---------- */
-function saveWorkouts(){ localStorage.setItem('workouts', JSON.stringify(workouts)); localStorage.setItem('planName', currentPlanName); }
-
-/* ---------- Auto-select today ---------- */
-const jsDay = new Date().getDay();
-const dayMap = {0:7,1:1,2:2,3:3,4:4,5:5,6:6};
-showExercises(dayMap[jsDay]);
-
-/* ---------- Theme ---------- */
-if(localStorage.getItem('theme')==='light') document.body.classList.add('light');
-function toggleTheme(){
-  document.body.classList.toggle('light');
-  const isLight = document.body.classList.contains('light');
-  document.getElementById('theme-toggle').setAttribute('aria-pressed', isLight? 'true' : 'false');
-  localStorage.setItem('theme', isLight? 'light':'dark');
+// --------------------------- Theme --------------------------------
+function initTheme(){
+  const pref = localStorage.getItem(LS_THEME_KEY) || 'light';
+  setTheme(pref);
+  qs('#darkToggle').checked = (pref==='dark');
+  qs('#darkToggle').addEventListener('change', e=>{
+    const t = e.target.checked? 'dark':'light'; setTheme(t); localStorage.setItem(LS_THEME_KEY, t);
+  })
+}
+function setTheme(t){
+  document.body.setAttribute('data-theme', t);
 }
 
-/* ---------- Utility ---------- */
-function escapeHtml(text){
-  return String(text).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// --------------------------- Events --------------------------------
+let currentFilter = 'all';
+function attachEvents(){
+  qsa('[data-filter]').forEach(btn=>btn.addEventListener('click', e=>{
+    currentFilter = e.target.dataset.filter; renderExercises(currentFilter, qs('#searchBox').value);
+  }));
+
+  qs('#searchBox').addEventListener('input', e=>{
+    renderExercises(currentFilter, e.target.value);
+  });
+
+  qs('#selectAll').addEventListener('click', ()=>{
+    EXERCISES.forEach(ex=>selected.add(ex.name)); localStorage.setItem('fitflow_current_selection', JSON.stringify([...selected])); renderExercises(currentFilter, qs('#searchBox').value);
+  });
+  qs('#deselectAll').addEventListener('click', ()=>{ selected.clear(); localStorage.setItem('fitflow_current_selection', JSON.stringify([...selected])); renderExercises(currentFilter, qs('#searchBox').value); });
+
+  qs('#savePlan').addEventListener('click', ()=>{
+    const name = qs('#planName').value.trim() || ('Plan ' + new Date().toLocaleString());
+    const plans = loadPlans(); plans.unshift({name, items:[...selected]}); savePlans(plans); renderPlans(); qs('#planName').value='';
+    // do not show any toast/alert; saved silently as requested
+  });
+
+  qs('#clearPlans').addEventListener('click', ()=>{ localStorage.removeItem(LS_PLANS_KEY); renderPlans(); });
+
+  // open filters on mobile
+  qs('#openFilters').addEventListener('click', ()=>{ const side = qs('.sidebar'); side.style.display = side.style.display==='none' || !side.style.display? 'block':'none'; });
 }
+
+// --------------------------- Init --------------------------------
+(function init(){
+  renderDate();
+  initTheme();
+  // load previous selection
+  try{ const prev = JSON.parse(localStorage.getItem('fitflow_current_selection')||'[]'); selected = new Set(prev); }catch(e){selected=new Set()}
+  renderExercises(); renderPlans(); attachEvents();
+  qs('#year').textContent = new Date().getFullYear();
+
+  // subtle interval to update day at midnight without reload
+  setInterval(()=>{ renderDate(); renderExercises(currentFilter, qs('#searchBox').value); }, 60*1000);
+})();
+
 </script>
-
 </body>
 </html>
